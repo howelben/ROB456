@@ -1,0 +1,2 @@
+set(lab2_MESSAGE_FILES "/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetAction.msg;/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetActionGoal.msg;/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetActionResult.msg;/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetActionFeedback.msg;/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetGoal.msg;/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetResult.msg;/home/smartw/ros_ws/devel/share/lab2/msg/NavTargetFeedback.msg")
+set(lab2_SERVICE_FILES "")
