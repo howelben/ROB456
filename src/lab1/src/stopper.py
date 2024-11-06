@@ -46,11 +46,10 @@ def callback(scan):
 	# Finally, set t.linear.x to be your desired speed (0 if stop)
 	# Suggestion: Do this with a for loop before being fancy with numpy (which is substantially faster)
 	# DO NOT hard-wire in the number of readings, or the min/max angle. You CAN hardwire in the size of the robot
-
 	# Create a twist and fill in all the fields (you will only set t.linear.x).
 	t = Twist()
 	t.linear.x = 0.2
-	t.linear.y = 0.4
+	t.linear.y = 0.0
 	t.linear.z = 0.0
 	t.angular.x = 0.0
 	t.angular.y = 0.0
@@ -58,7 +57,9 @@ def callback(scan):
 
 	shortest = 0
 # YOUR CODE HERE
-
+	for r, theta in zip(scan.ranges, thetas):
+		abs_y = abs(r* np.sin(theta))
+		rospy.loginfo(f"R: {r}, theta: {theta}")
 	# Send the command to the robot.
 	publisher.publish(t)
 
