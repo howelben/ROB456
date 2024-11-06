@@ -57,9 +57,17 @@ def callback(scan):
 
 	shortest = 0
 # YOUR CODE HERE
+	shortest = max(scan.ranges)
 	for r, theta in zip(scan.ranges, thetas):
 		abs_y = abs(r* np.sin(theta))
-		rospy.loginfo(f"R: {r}, theta: {theta}")
+		if abs_y <= 0.19:
+			shortest  = min(shortest, r)
+   
+	if (shortest - 1.0) <= 0.02:
+		t.linear.x = 0.0
+	else:
+		t.linear.x = np.tanh(shortest - 1.0)
+   
 	# Send the command to the robot.
 	publisher.publish(t)
 
