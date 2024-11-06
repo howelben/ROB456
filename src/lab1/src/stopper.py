@@ -49,7 +49,7 @@ def callback(scan):
 
 	# Create a twist and fill in all the fields (you will only set t.linear.x).
 	t = Twist()
-	t.linear.x = 0.3
+	t.linear.x = 0.2
 	t.linear.y = 0.4
 	t.linear.z = 0.0
 	t.angular.x = 0.0
