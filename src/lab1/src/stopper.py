@@ -63,7 +63,7 @@ def callback(scan):
 		if abs_y <= 0.19:
 			shortest  = min(shortest, r)
    
-	if (shortest - 1.0) <= 0.02:
+	if (shortest - 1.0) <= 0.01:
 		t.linear.x = 0.0
 	else:
 		t.linear.x = np.tanh(shortest - 1.0)
