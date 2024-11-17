@@ -148,7 +148,7 @@ class Driver:
 			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
-			if range < 0.5:
+			if range < 0.75:
 				if -0.3 < angle_rad < 0:  # Front right region
 					theta += 0.1
 				elif 0 < angle_rad < 0.3: #Front left region
@@ -157,11 +157,11 @@ class Driver:
 					theta -= 0.20
 				elif -1.0 < angle_rad <= -0.3:  # Right region
 					theta += 0.20
-				if range < 0.30:
+				if range < 0.5:
 					if 1.0 <= angle_rad < 1.4:  # Extreme Left region
-						theta -= 0.40
+						theta -= 0.5
 					elif -1.4 < angle_rad <= -1.0:
-						theta  += 0.40
+						theta  += 0.5
       
     		
 		# if front_obstacle:
