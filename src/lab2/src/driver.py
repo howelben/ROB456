@@ -150,9 +150,9 @@ class Driver:
 			if range < 1.0:
 				if -0.3 < angle_rad < 0.3:  # Front region
 					front_obstacle = True
-				elif 0.3 <= angle_rad < 1.0:  # Left region
+				elif 0.3 <= angle_rad < 1.4:  # Left region
 					left_obstacle = True
-				elif -1.0 < angle_rad <= -0.3:  # Right region
+				elif -1.4 < angle_rad <= -0.3:  # Right region
 					right_obstacle = True
     		
 		if front_obstacle:
