@@ -147,24 +147,24 @@ class Driver:
 			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
-			if range < 1.5:
+			if range < 1.0:
 				if -0.3 < angle_rad < 0.3:  # Front region
 					front_obstacle = True
-				elif 0.3 <= angle_rad < 1.4:  # Left region
+				elif 0.3 <= angle_rad < 1.5:  # Left region
 					left_obstacle = True
-				elif -1.4 < angle_rad <= -0.3:  # Right region
+				elif -1.5 < angle_rad <= -0.3:  # Right region
 					right_obstacle = True
     		
 		if front_obstacle:
 			if left_obstacle and not right_obstacle:
 				# Veer right if both front and left are blocked
-				theta -= 0.75
+				theta -= 1.0
 			elif right_obstacle and not left_obstacle:
 				# Veer left if both front and right are blocked
-				theta += 0.75
+				theta += 1.0
 			else:
 				# Default to veering left if all sides are blocked
-				theta += 0.75
+				theta += 1.0
 		elif left_obstacle and not front_obstacle:
 			# Slightly veer right to avoid a left-side obstacle
 			theta -= 0.5
