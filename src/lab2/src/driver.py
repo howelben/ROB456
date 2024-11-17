@@ -141,6 +141,7 @@ class Driver:
 		left_obstacle, right_obstacle, front_obstacle = False, False, False
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
+		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
 			abs_y = abs(range * sin(angle_rad))
