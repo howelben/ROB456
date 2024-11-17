@@ -138,7 +138,8 @@ class Driver:
 		#  Step 1) Calculate the angle the robot has to turn to in order to point at the target
 		#  Step 2) Set your speed based on how far away you are from the target, as before
 		#  Step 3) Add code that veers left (or right) to avoid an obstacle in front of it
-		obs = False
+		left_or_right_obs = 0
+		obs_detected = False
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
 		shortest = max(lidar.ranges)
@@ -147,15 +148,19 @@ class Driver:
 			y_dist = range* sin(angle_rad)
 			abs_y = abs(y_dist)
 			if abs_y <= 0.19:
+				if shortest > range:
+					left__or_right_obs = y_dist
 				shortest  = min(shortest, range)
-				obs = True
-		if obs == True:
+				obs_detected = True	
+		if obs_detected == True:
 			if (shortest - 1.0) <= 0.01:
 				command.linear.x = 0.0
-			if target[1] >= 0:
+			if left__or_right_obs >= 0:
 				theta += 0.25
+				print("Obstacle on the right")
 			else:
-				theta -= 0.2
+				theta -= 0.25
+				print("Obstalce on the left")
 			command.angular.z = theta
 		else:
        	# This sets the move forward speed (as before)
