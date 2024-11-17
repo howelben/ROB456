@@ -172,7 +172,8 @@ class Driver:
 			# Slightly veer left to avoid a right-side obstacle
 			theta += 0.5
 		if (shortest - 1.0) < 0.01 and distance > shortest:
-			command.linear.x = tanh(shortest)
+			command.linear.x = 0
+			theta += 0.5
 		else:
 			# This sets the move forward speed (as before)
 			command.linear.x = tanh(distance)
