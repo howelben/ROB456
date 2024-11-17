@@ -153,18 +153,14 @@ class Driver:
 					print(obs_dist)
 				shortest  = min(shortest, range)
 		
-		if (shortest - 1.0) <= 0.1:
-			if obs_dist <= 0:
-				theta += 1.0
-			elif obs_dist > 0:
-				theta -= 1.0
-			command.linear.x = 0
-			command.angular.z = theta
-		else:
+		if obs_dist <= 0:
+			theta += 0.3
+		elif obs_dist > 0:
+			theta -= 0.3
        	# This sets the move forward speed (as before)
-			command.linear.x = tanh(distance)
+		command.linear.x = tanh(distance)
 		# This sets the angular turn speed (in radians per second)
-			command.angular.z = theta
+		command.angular.z = theta
 
 # YOUR CODE HERE
 
