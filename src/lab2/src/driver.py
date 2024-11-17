@@ -155,9 +155,9 @@ class Driver:
 		
 		if (shortest - 1.0) <= 0.1:
 			if obs_dist <= 0:
-				theta -= 0.4
-			elif obs_dist > 0:
 				theta += 0.4
+			elif obs_dist > 0:
+				theta -= 0.4
 			command.linear.x = 0
 			command.angular.z = theta
 		else:
