@@ -142,20 +142,27 @@ class Driver:
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
 		shortest = max(lidar.ranges)
+		print(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
 			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
 			if range < 0.5:
-				if -0.3 < angle_rad < 0:  # Front region
-					theta -= 0.1
-				elif 0 < angle_rad < 0.3:
+				if -0.3 < angle_rad < 0:  # Front right region
 					theta += 0.1
+				elif 0 < angle_rad < 0.3: #Front left region
+					theta -= 0.1
 				elif 0.3 <= angle_rad < 1.0:  # Left region
 					theta -= 0.20
 				elif -1.0 < angle_rad <= -0.3:  # Right region
 					theta += 0.20
+				if range < 0.30:
+					if 1.0 <= angle_rad < 1.4:  # Extreme Left region
+						theta -= 0.40
+					elif -1.4 < angle_rad <= -1.0:
+						theta  += 0.40
+      
     		
 		# if front_obstacle:
 		# 	if left_obstacle and not right_obstacle:
