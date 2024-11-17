@@ -175,7 +175,7 @@ class Driver:
 		if (shortest - 1.0) < 0.5:
 			command.linear.x = 0.5*tanh(0.5)
 		if (shortest - 1.0) < 0.01:
-			command.lienar.x = 0
+			command.linear.x = 0
 			theta += 0.5
 
 	# This sets the move forward speed (as before)
