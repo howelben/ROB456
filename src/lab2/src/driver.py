@@ -173,7 +173,7 @@ class Driver:
 			theta += 0.5
 		if (shortest - 1.0) < 0.01 and distance > shortest:
 			command.linear.x = 0
-			theta += 0.5
+			theta += 1.5
 		else:
 			# This sets the move forward speed (as before)
 			command.linear.x = tanh(distance)
