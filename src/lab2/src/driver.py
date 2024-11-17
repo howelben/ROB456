@@ -167,10 +167,10 @@ class Driver:
 				theta += 1.0
 		elif left_obstacle and not front_obstacle:
 			# Slightly veer right to avoid a left-side obstacle
-			theta -= 0.5
+			theta -= 0.75
 		elif right_obstacle and not front_obstacle:
 			# Slightly veer left to avoid a right-side obstacle
-			theta += 0.5
+			theta += 0.75
 		if (shortest - 1.0) < 0.01 and distance > shortest:
 			command.linear.x = 0
 			theta += 2.0
