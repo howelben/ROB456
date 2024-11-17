@@ -152,9 +152,9 @@ class Driver:
 					theta -= 0.1
 				elif 0 < angle_rad < 0.3:
 					theta += 0.1
-				elif 0.3 <= angle_rad < 1.5:  # Left region
+				elif 0.3 <= angle_rad < 1.0:  # Left region
 					theta -= 0.20
-				elif -1.5 < angle_rad <= -0.3:  # Right region
+				elif -1.0 < angle_rad <= -0.3:  # Right region
 					theta += 0.20
     		
 		# if front_obstacle:
