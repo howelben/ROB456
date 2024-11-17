@@ -139,10 +139,8 @@ class Driver:
 		#  Step 2) Set your speed based on how far away you are from the target, as before
 		#  Step 3) Add code that veers left (or right) to avoid an obstacle in front of it
 		left_obstacle, right_obstacle, front_obstacle = False, False, False
-		obs_dist = 0
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
-		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
 			abs_y = abs(range * sin(angle_rad))
@@ -159,27 +157,24 @@ class Driver:
 		if front_obstacle:
 			if left_obstacle and not right_obstacle:
 				# Veer right if both front and left are blocked
-				theta -= 0.5
+				theta -= 0.75
 			elif right_obstacle and not left_obstacle:
 				# Veer left if both front and right are blocked
-				theta += 0.5
+				theta += 0.75
 			else:
 				# Default to veering left if all sides are blocked
-				theta += 0.5
+				theta += 0.75
 		elif left_obstacle and not front_obstacle:
 			# Slightly veer right to avoid a left-side obstacle
-			theta -= 0.3
+			theta -= 0.5
 		elif right_obstacle and not front_obstacle:
 			# Slightly veer left to avoid a right-side obstacle
-			theta += 0.3
-		if (shortest - 1.0) < 0.5:
-			command.linear.x = 0.5*tanh(0.5)
-		if (shortest - 1.0) < 0.01:
-			command.linear.x = 0
 			theta += 0.5
-
-	# This sets the move forward speed (as before)
-		command.linear.x = tanh(distance)
+		if (shortest - 1.0) < 0.01 and distance > shortest:
+			command.linear.x = tanh(shortest)
+		else:
+			# This sets the move forward speed (as before)
+			command.linear.x = tanh(distance)
 	# This sets the angular turn speed (in radians per second)
 		command.angular.z = theta
 
