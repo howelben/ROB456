@@ -145,6 +145,9 @@ class Driver:
 		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
+			abs_y = range * sin(angle_rad)
+			if abs_y < 0.19:
+				shortest  = min(shortest, range)
 			if range < 1.0:
 				if -0.2 < angle_rad < 0.2:  # Front region
 					front_obstacle = True
@@ -169,6 +172,12 @@ class Driver:
 		elif right_obstacle and not front_obstacle:
 			# Slightly veer left to avoid a right-side obstacle
 			theta += 0.3
+		if (shortest - 1.0) < 0.5:
+			command.linear.x = 0.5*tanh(0.5)
+		if (shortest - 1.0) < 0.01:
+			command.lienar.x = 0
+			theta += 0.5
+
 	# This sets the move forward speed (as before)
 		command.linear.x = tanh(distance)
 	# This sets the angular turn speed (in radians per second)
