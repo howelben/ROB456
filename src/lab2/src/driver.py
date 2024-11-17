@@ -150,14 +150,18 @@ class Driver:
 				shortest  = min(shortest, range)
 				obs = True
 		if obs == True:
+			if (shortest - 1.0) <= 0.01:
+				command.linear.x = 0.0
 			if target[1] >= 0:
 				theta += 0.25
 			else:
-				theta -= 0.25
+				theta -= 0.2
+			command.angular.z = theta
+		else:
        	# This sets the move forward speed (as before)
-		command.linear.x = tanh(distance)
+			command.linear.x = tanh(distance)
 		# This sets the angular turn speed (in radians per second)
-		command.angular.z = theta
+			command.angular.z = theta
 
 # YOUR CODE HERE
 
