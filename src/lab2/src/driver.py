@@ -138,28 +138,40 @@ class Driver:
 		#  Step 1) Calculate the angle the robot has to turn to in order to point at the target
 		#  Step 2) Set your speed based on how far away you are from the target, as before
 		#  Step 3) Add code that veers left (or right) to avoid an obstacle in front of it
-		left_obstacle, right_obstacle = False, False
+		left_obstacle, right_obstacle, front_obstacle = False, False, False
 		obs_dist = 0
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
 		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
-			y_dist = range* sin(angle_rad)
-			abs_y = abs(y_dist)
-			if abs_y <= 0.19:
-				if shortest > range:
-					obs_dist = y_dist
-					print(obs_dist)
-				shortest  = min(shortest, range)
-		
-		if obs_dist <= 0:
-			theta += 0.3
-		elif obs_dist > 0:
+			if range < 1.0:
+				if -0.2 < angle_rad < 0.2:  # Front region
+					front_obstacle = True
+				elif 0.2 <= angle_rad < 1.0:  # Left region
+					left_obstacle = True
+				elif -1.0 < angle_rad <= -0.2:  # Right region
+					right_obstacle = True
+    		
+		if front_obstacle:
+			if left_obstacle and not right_obstacle:
+				# Veer right if both front and left are blocked
+				theta -= 0.5
+			elif right_obstacle and not left_obstacle:
+				# Veer left if both front and right are blocked
+				theta += 0.5
+			else:
+				# Default to veering left if all sides are blocked
+				theta += 0.5
+		elif left_obstacle and not front_obstacle:
+			# Slightly veer right to avoid a left-side obstacle
 			theta -= 0.3
-       	# This sets the move forward speed (as before)
+		elif right_obstacle and not front_obstacle:
+			# Slightly veer left to avoid a right-side obstacle
+			theta += 0.3
+	# This sets the move forward speed (as before)
 		command.linear.x = tanh(distance)
-		# This sets the angular turn speed (in radians per second)
+	# This sets the angular turn speed (in radians per second)
 		command.angular.z = theta
 
 # YOUR CODE HERE
