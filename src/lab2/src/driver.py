@@ -145,15 +145,15 @@ class Driver:
 		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
-			abs_y = range * sin(angle_rad)
+			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
 			if range < 1.0:
-				if -0.2 < angle_rad < 0.2:  # Front region
+				if -0.3 < angle_rad < 0.3:  # Front region
 					front_obstacle = True
-				elif 0.2 <= angle_rad < 1.0:  # Left region
+				elif 0.3 <= angle_rad < 1.0:  # Left region
 					left_obstacle = True
-				elif -1.0 < angle_rad <= -0.2:  # Right region
+				elif -1.0 < angle_rad <= -0.3:  # Right region
 					right_obstacle = True
     		
 		if front_obstacle:
