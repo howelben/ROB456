@@ -148,29 +148,31 @@ class Driver:
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
 			if range < 1.0:
-				if -0.3 < angle_rad < 0.3:  # Front region
-					front_obstacle = True
+				if -0.3 < angle_rad < 0:  # Front region
+					theta -= 0.1
+				elif 0 < angle_rad < 0.3:
+					theta += 0.1
 				elif 0.3 <= angle_rad < 1.5:  # Left region
-					left_obstacle = True
+					theta -= 0.25
 				elif -1.5 < angle_rad <= -0.3:  # Right region
-					right_obstacle = True
+					theta += 0.25
     		
-		if front_obstacle:
-			if left_obstacle and not right_obstacle:
-				# Veer right if both front and left are blocked
-				theta -= 1.0
-			elif right_obstacle and not left_obstacle:
-				# Veer left if both front and right are blocked
-				theta += 1.0
-			else:
-				# Default to veering left if all sides are blocked
-				theta += 1.0
-		elif left_obstacle and not front_obstacle:
-			# Slightly veer right to avoid a left-side obstacle
-			theta -= 0.75
-		elif right_obstacle and not front_obstacle:
-			# Slightly veer left to avoid a right-side obstacle
-			theta += 0.75
+		# if front_obstacle:
+		# 	if left_obstacle and not right_obstacle:
+		# 		# Veer right if both front and left are blocked
+		# 		theta -= 1.0
+		# 	elif right_obstacle and not left_obstacle:
+		# 		# Veer left if both front and right are blocked
+		# 		theta += 1.0
+		# 	else:
+		# 		# Default to veering left if all sides are blocked
+		# 		theta += 1.0
+		# elif left_obstacle and not front_obstacle:
+		# 	# Slightly veer right to avoid a left-side obstacle
+		# 	theta -= 0.75
+		# elif right_obstacle and not front_obstacle:
+		# 	# Slightly veer left to avoid a right-side obstacle
+		# 	theta += 0.75
 		if (shortest - 1.0) < 0.01 and distance > shortest:
 			command.linear.x = 0
 			theta += 2.0
