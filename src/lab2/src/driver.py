@@ -142,9 +142,9 @@ class Driver:
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
 		shortest = max(lidar.ranges)
-		print(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
+			print(range* sin(angle_rad))
 			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
