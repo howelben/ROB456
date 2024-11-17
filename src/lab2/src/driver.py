@@ -147,7 +147,7 @@ class Driver:
 			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
-			if range < 1.0:
+			if range < 1.5:
 				if -0.3 < angle_rad < 0.3:  # Front region
 					front_obstacle = True
 				elif 0.3 <= angle_rad < 1.4:  # Left region
@@ -173,7 +173,7 @@ class Driver:
 			theta += 0.5
 		if (shortest - 1.0) < 0.01 and distance > shortest:
 			command.linear.x = 0
-			theta += 1.5
+			theta += 2.0
 		else:
 			# This sets the move forward speed (as before)
 			command.linear.x = tanh(distance)
