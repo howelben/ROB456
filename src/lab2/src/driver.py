@@ -4,7 +4,7 @@
 import rospy
 import sys
 
-from math import atan2, tanh, sqrt, pi
+from math import atan2, tanh, sqrt, pi, sin
 
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, Point
@@ -138,11 +138,23 @@ class Driver:
 		#  Step 1) Calculate the angle the robot has to turn to in order to point at the target
 		#  Step 2) Set your speed based on how far away you are from the target, as before
 		#  Step 3) Add code that veers left (or right) to avoid an obstacle in front of it
-		print(lidar)
+		obs = False
 		theta = atan2(target[1], target[0])
-		print(f"Theta: {theta}")
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
-		# This sets the move forward speed (as before)
+		shortest = max(lidar.ranges)
+		for i, range in enumerate(lidar.ranges):
+			angle_rad = lidar.angle_min + i*lidar.angle_increment
+			y_dist = range* sin(angle_rad)
+			abs_y = abs(y_dist)
+			if abs_y <= 0.19:
+				shortest  = min(shortest, range)
+				obs = True
+		if obs == True:
+			if target[1] >= 0:
+				theta += 0.25
+			else:
+				theta -= 0.25
+       	# This sets the move forward speed (as before)
 		command.linear.x = tanh(distance)
 		# This sets the angular turn speed (in radians per second)
 		command.angular.z = theta
