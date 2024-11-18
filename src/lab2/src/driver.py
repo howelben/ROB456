@@ -139,11 +139,11 @@ class Driver:
 		#  Step 2) Set your speed based on how far away you are from the target, as before
 		#  Step 3) Add code that veers left (or right) to avoid an obstacle in front of it
 		theta = atan2(target[1], target[0])
+		print(theta)
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
 		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
-			print(range* sin(angle_rad))
 			abs_y = abs(range * sin(angle_rad))
 			if abs_y < 0.19:
 				shortest  = min(shortest, range)
