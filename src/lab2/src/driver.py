@@ -169,7 +169,7 @@ class Driver:
 			# This sets the move forward speed (as before)
 			command.linear.x = tanh(distance)
 	# This sets the angular turn speed (in radians per second)
-		command.angular.z = theta
+		command.angular.z = -0.3
 
 # YOUR CODE HERE
 
