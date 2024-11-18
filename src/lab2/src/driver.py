@@ -162,7 +162,7 @@ class Driver:
 					elif -1.4 < angle_rad <= -1.0:
 						theta  += 0.6
 
-		if (shortest - 0.4) < 0.01 and distance > shortest:
+		if (shortest - 0.4) < 0.01:
 			command.linear.x = 0
 		else:
 			# This sets the move forward speed (as before)
