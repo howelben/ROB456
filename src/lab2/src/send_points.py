@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
 	# Create a list of points on a circle. In __init__, this is turned into a kist of PointStamped
 	#points = [(2 * np.cos(theta), 2 * np.sin(theta)) for theta in np.linspace(0.0, 2 * np.pi, 15)]
-	points = [(4.68, -0.03), (2.5, -0.16)]
+	points = [(4.0,4.0)]
 	# Create the class above, initialized with the set of points
 	sender = SendPoints(points)
 
