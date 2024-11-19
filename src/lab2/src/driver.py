@@ -138,8 +138,9 @@ class Driver:
 		#  Step 1) Calculate the angle the robot has to turn to in order to point at the target
 		#  Step 2) Set your speed based on how far away you are from the target, as before
 		#  Step 3) Add code that veers left (or right) to avoid an obstacle in front of it
+
+# YOUR CODE HERE
 		theta = atan2(target[1], target[0])
-		print(theta)
 		distance = sqrt(target[0] ** 2 + target[1] ** 2)
 		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
@@ -169,8 +170,6 @@ class Driver:
 			command.linear.x = tanh(distance)
 	# This sets the angular turn speed (in radians per second)
 		command.angular.z = theta
-
-# YOUR CODE HERE
 
 		return command
 
