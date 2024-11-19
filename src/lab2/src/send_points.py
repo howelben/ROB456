@@ -123,8 +123,8 @@ if __name__ == '__main__':
 
 	# Create a list of points on a circle. In __init__, this is turned into a kist of PointStamped
 	
-	points = [(-4.5, -3.5) , (-6.70,-5.54)] #Blue points
-	#points = [(-0.25, -3.13)]#Red points
+	#points = [(-4.5, -3.5) , (-6.70,-5.54)] #Blue points
+	points = [(-0.25, -3.13)]#Red points
 	#points = [(4.75, 0.25), (2.27, 0)] #Grey points
 	# Create the class above, initialized with the set of points
 	sender = SendPoints(points)
