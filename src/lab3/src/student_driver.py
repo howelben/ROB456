@@ -50,7 +50,7 @@ class StudentDriver(Driver):
 		'''
 		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] **2)
-		rospy.loginfo(f'Distance: {distance:.2f}, angle: {angle:.2f}')
+		rospy.loginfo(f'Distance: {distance:.2f}, angle: {theta:.2f}')
 
 		# This builds a Twist message with all elements set to zero.
 		command = Driver.zero_twist()
@@ -83,7 +83,6 @@ class StudentDriver(Driver):
 	# This sets the angular turn speed (in radians per second)
 		command.angular.z = theta
 
-		return command
 		return command
 
 
