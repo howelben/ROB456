@@ -4,7 +4,6 @@
 import sys
 import rospy
 import signal
-import numpy as np
 
 import path_planning as path_plan
 import exploring as explore
@@ -47,7 +46,12 @@ class StudentController(RobotController):
 			map_data:	A MapMetaData containing the current map meta data.
 		'''
 		rospy.loginfo('Got a map update.')
-
+	# im = np.array(controller.map.data).reshape(controller.map.info.height,controller.map.info.width)
+	# im = path_plan.convert_image(im, 100, 0)
+	# all_unseen = explore.find_all_possible_goals(im)
+	# best_point = explore.best_unseen(im, all_unseen, (controller.point.x, controller.point.y))
+	# path = path_plan.dijkstra(im, (controller.point.x, controller.point.y), best_point)
+	# waypoints = explore.find_waypoints(im, path)
 		# It's possible that the position passed to this function is None.  This try-except block will deal
 		# with that.  Trying to unpack the position will fail if it's None, and this will raise an exception.
 		# We could also explicitly check to see if the point is None.
@@ -70,13 +74,7 @@ if __name__ == '__main__':
 	# This will move the robot to a set of fixed waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
-	im = np.array(controller.map.data).reshape(controller.map.info.height,controller.map.info.width)
-	im = path_plan.convert_image(im, 100, 0)
-	all_unseen = explore.find_all_possible_goals(im)
-	best_point = explore.best_unseen(im, all_unseen, (controller.point.x, controller.point.y))
-	path = path_plan.dijkstra(im, (controller.point.x, controller.point.y), best_point)
-	waypoints = explore.find_waypoints(im, path)
-	controller.set_waypoints(waypoints)
+	controller.set_waypoints(controller.point.x, controller.point.y)
 
 	# Once you call this function, control is given over to the controller, and the robot will start to
 	# move.  This function will never return, so any code below it in the file will not be executed.
