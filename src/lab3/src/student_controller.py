@@ -70,7 +70,7 @@ if __name__ == '__main__':
 	# This will move the robot to a set of fixed waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
-	im = np.array(map.data).reshape(map.info.height, map.info.width)
+	im = np.array(controller.map.data).reshape(controller.map.info.height,controller.map.info.width)
 	im = path_plan.convert_image(im, 100, 0)
 	all_unseen = explore.find_all_possible_goals(im)
 	best_point = explore.best_unseen(im, all_unseen, (controller.point.x, controller.point.y))
