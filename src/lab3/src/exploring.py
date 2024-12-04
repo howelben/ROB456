@@ -23,7 +23,7 @@ import path_planning as path_planning
 import heapq
 
 # Using imageio to read in the image
-import imageio
+#import imageio
 
 
 # -------------- Showing start and end and path ---------------

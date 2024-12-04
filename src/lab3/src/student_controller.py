@@ -5,6 +5,9 @@ import sys
 import rospy
 import signal
 
+import path_planning as path_plan
+import exploring as explore
+
 from controller import RobotController
 
 

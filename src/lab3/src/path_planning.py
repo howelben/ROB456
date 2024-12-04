@@ -17,7 +17,7 @@ import numpy as np
 import heapq
 
 # Using imageio to read in the image
-import imageio
+#import imageio
 
 
 # -------------- Showing start and end and path ---------------
