@@ -145,10 +145,10 @@ class Driver:
 		shortest = max(lidar.ranges)
 		for i, range in enumerate(lidar.ranges):
 			angle_rad = lidar.angle_min + i*lidar.angle_increment
-			abs_y = abs(range * sin(angle_rad))
+			abs_y = abs(range * sin(angle_rad)) 
 			if abs_y < 0.19:
-				shortest  = min(shortest, range)
-			if range < 0.60:
+				shortest  = min(shortest, range)#Grabs shortest range
+			if range < 0.60: #If lidar detects wall in close to robot, moves robot based off what region the scan is in
 				if -0.3 < angle_rad < 0:  # Front right region
 					theta += 0.1
 				elif 0 < angle_rad < 0.3: #Front left region
@@ -163,7 +163,7 @@ class Driver:
 					elif -1.4 < angle_rad <= -1.0:
 						theta  += 0.6
 
-		if (shortest - 0.4) < 0.01:
+		if (shortest - 0.4) < 0.01: #Stops if robot is to close to the wall
 			command.linear.x = 0
 		else:
 			# This sets the move forward speed (as before)
