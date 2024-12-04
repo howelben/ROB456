@@ -5,9 +5,8 @@ import sys
 import rospy
 
 from new_driver import Driver
-from math import atan2, tanh, sqrt, pi, sin
 
-from math import atan2, sqrt
+from math import atan2, sqrt, sin, tanh
 
 
 class StudentDriver(Driver):
@@ -49,7 +48,7 @@ class StudentDriver(Driver):
 		Returns:
 			A Twist message, containing the commanded robot velocities.
 		'''
-		angle = atan2(target[1], target[0])
+		theta = atan2(target[1], target[0])
 		distance = sqrt(target[0] ** 2 + target[1] **2)
 		rospy.loginfo(f'Distance: {distance:.2f}, angle: {angle:.2f}')
 
@@ -63,18 +62,18 @@ class StudentDriver(Driver):
 				shortest  = min(shortest, range)#Grabs shortest range
 			if range < 0.60: #If lidar detects wall in close to robot, moves robot based off what region the scan is in
 				if -0.3 < angle_rad < 0:  # Front right region
-					angle += 0.1
+					theta += 0.1
 				elif 0 < angle_rad < 0.3: #Front left region
-					angle -= 0.1
+					theta -= 0.1
 				elif 0.3 <= angle_rad < 1.0:  # Left region
-					angle -= 0.25
+					theta -= 0.25
 				elif -1.0 < angle_rad <= -0.3:  # Right region
-					angle += 0.25
+					theta += 0.25
 				if range < 0.4:
 					if 1.0 <= angle_rad < 1.4:  # Extreme Left region
-						angle -= 0.6
-					elif -1.4 < angle_rad <= -1.0: #Extreme right region
-						angle  += 0.6
+						theta -= 0.6
+					elif -1.4 < angle_rad <= -1.0:
+						theta  += 0.6
 
 		if (shortest - 0.4) < 0.01: #Stops if robot is to close to the wall
 			command.linear.x = 0
@@ -82,8 +81,9 @@ class StudentDriver(Driver):
 			# This sets the move forward speed (as before)
 			command.linear.x = tanh(distance)
 	# This sets the angular turn speed (in radians per second)
-		command.angular.z = angle
+		command.angular.z = theta
 
+		return command
 		return command
 
 

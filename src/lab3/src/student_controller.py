@@ -5,9 +5,6 @@ import sys
 import rospy
 import signal
 
-import path_planning as path_plan
-import exploring as explore
-
 from controller import RobotController
 
 
@@ -57,7 +54,6 @@ class StudentController(RobotController):
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 		except:
 			rospy.loginfo('No odometry information')
-		
 
 
 if __name__ == '__main__':
