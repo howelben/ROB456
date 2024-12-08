@@ -67,15 +67,14 @@ class StudentController(RobotController):
 		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
 		possible_points = explore.find_all_possible_goals(im_thresh)
 		robot_pix = explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin)
-		robot_pix = tuple(robot_pix)
 		rospy.loginfo(f"Robot pixel: {robot_pix}")
-		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
-		rospy.loginfo(f"Best point: {best_point}")
-		path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
-		rospy.loginfo(f"Path: {path}")
-		waypoints = explore.find_waypoints(im_thresh, path)
-		for i in waypoints:
-			waypoints_xy + explore.convert_pix_to_x_y(im_size, waypoints[i], size_pix, origin)
+		# best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
+		# rospy.loginfo(f"Best point: {best_point}")
+		# path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
+		# rospy.loginfo(f"Path: {path}")
+		# waypoints = explore.find_waypoints(im_thresh, path)
+		for i in possible_points:
+			waypoints_xy + explore.convert_pix_to_x_y(im_size, possible_points[i], size_pix, origin)
 		rospy.loginfo(f"Waypoint:{waypoints_xy}")
 
 if __name__ == '__main__':
