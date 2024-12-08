@@ -58,11 +58,11 @@ class StudentController(RobotController):
 
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 			im = np.array(map.data).reshape(map.info.height, map.info.width)
-			unique, counts = np.unique(a, return_counts=True)
+			unique, counts = np.unique(im, return_counts=True)
 			rospy.loginfo(dict(zip(unique, counts)))
 			rospy.loginfo(f"Map: {im}")
 			im_threshhold = pathplan.convert_image(im, 0.3, 0.7)
-			unique, counts = np.unique(a, return_counts=True)
+			unique, counts = np.unique(im_threshhold, return_counts=True)
 			rospy.loginfo(dict(zip(unique, counts)))
 			rospy.loginfo(f"Map_threshhold{im_threshhold}")
 			
