@@ -83,7 +83,7 @@ def convert_pix_to_x_y(im_size, pix, size_pix, origin):
     if not (0 <= pix[0] <= im_size[1]) or not (0 <= pix[1] <= im_size[0]):
         raise ValueError(f"Pixel {pix} not in image, image size {im_size}")
 
-    x_y = [size_pix * pix[i] + origin for i in range(0, 2)]
+    x_y = (size_pix * pix[i] + origin for i in range(0, 2))
     return x_y
 
 
@@ -94,7 +94,7 @@ def convert_x_y_to_pix(im_size, x_y, size_pix, origin):
     @param x_y - tuple with x,y in meters
     @param size_pix - size of pixel in meters
     @return i, j (integers) """
-    pix = [int((x_y[i]-origin) / size_pix) for i in range(0, 2)]
+    pix = (int((x_y[i]-origin) / size_pix) for i in range(0, 2))
 
     if not (0 <= pix[0] <= im_size[1]) or not (0 <= pix[1] <= im_size[0]):
         raise ValueError(f"Loc {x_y} not in image, image size {im_size}")
