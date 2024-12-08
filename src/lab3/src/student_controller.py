@@ -76,7 +76,7 @@ class StudentController(RobotController):
 		# for point in best_point:
 		# 	waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 		# 	waypoints_xy.append(waypoint)
-		waypoints_xy.append = tuple(explore.convert_pix_to_x_y(im_size, list(best_point), size_pix, origin))
+		waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(best_point), size_pix, origin)))
 		waypoints_xy = tuple(waypoints_xy)
 		controller.set_waypoints(waypoints_xy)
 		controller.send_points()
