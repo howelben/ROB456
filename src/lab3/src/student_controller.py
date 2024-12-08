@@ -50,7 +50,7 @@ class StudentController(RobotController):
 		# It's possible that the position passed to this function is None.  This try-except block will deal
 		# with that.  Trying to unpack the position will fail if it's None, and this will raise an exception.
 		# We could also explicitly check to see if the point is None.
-		waypoints_xy = ()
+		waypoints_xy = []
 		size_pix = map.info.resolution
 		origin = map.info.origin.position.x
 		im_size = [map.info.width, map.info.height]
@@ -77,7 +77,8 @@ class StudentController(RobotController):
 		for point in possible_points:
 			waypoint  = explore.convert_pix_to_x_y(im_size, point, size_pix, origin)
 			rospy.loginfo(waypoint)
-			waypoints_xy + tuple(waypoint)
+			waypoints_xy.append(waypoint)
+		waypoints_xy = tuple(waypoints_xy)
 		rospy.loginfo(f"Waypoint:{waypoints_xy}")
 
 if __name__ == '__main__':
