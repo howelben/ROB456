@@ -71,6 +71,7 @@ class StudentController(RobotController):
 		possible_points = explore.find_all_possible_goals(im_thresh)
 		rospy.loginfo(f"Possible points: {possible_points}")
 		robot_pix = explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin)
+		rospy.loginfO(f"Robot pixel: {robot_pix}")
 		best_point = explore.best_point(im_thresh, possible_points, robot_pix)
 		rospy.loginfo(f"Best point: {best_point}")
 		path = pathplan.dijkstra(im_thresh, robot_position, best_point)
