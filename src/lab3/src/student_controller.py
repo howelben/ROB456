@@ -74,11 +74,10 @@ class StudentController(RobotController):
 		# path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
 		# rospy.loginfo(f"Path: {path}")
 		# waypoints = explore.find_waypoints(im_thresh, path)
-		for i in possible_points:
-			rospy.loginfo(possible_points[i])
-			waypoint  = explore.convert_pix_to_x_y(im_size, possible_points(i), size_pix, origin)
+		for point in possible_points:
+			waypoint  = explore.convert_pix_to_x_y(im_size, point, size_pix, origin)
 			rospy.loginfo(waypoint)
-			waypoints_xy + waypoint
+			waypoints_xy + tuple(waypoint)
 		rospy.loginfo(f"Waypoint:{waypoints_xy}")
 
 if __name__ == '__main__':
