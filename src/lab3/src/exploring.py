@@ -98,6 +98,7 @@ def convert_x_y_to_pix(im_size, x_y, size_pix, origin):
 
     if not (0 <= pix[0] <= im_size[1]) or not (0 <= pix[1] <= im_size[0]):
         raise ValueError(f"Loc {x_y} not in image, image size {im_size}")
+    
     return pix
 
 

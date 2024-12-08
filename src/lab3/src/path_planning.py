@@ -93,6 +93,7 @@ def is_free(im, pix):
     """ Is the pixel empty?
     @param im - the image
     @param pix - the pixel i,j"""
+    print(pix)
     if im[pix[1], pix[0]] == 255:
         return True
     return False
