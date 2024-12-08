@@ -56,10 +56,14 @@ class StudentController(RobotController):
 			# The (x, y) position of the robot can be retrieved like this.
 			robot_position = (point.point.x, point.point.y)
 
+
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 			im = np.array(map.data).reshape(map.info.height, map.info.width)
+			rospy.loginfo(f"Height: {map.info.height}, Width: {map.info.height}")
 			im_thresh = pathplan.convert_image(im, 0.3, 0.7)
+			rospy.loginfo(f"Array Size{im_thresh.size}")
 			possible_points = explore.find_all_possible_goals(im_thresh)
+			rospy.loginfo(f"Possible points: {possible_points}")
 			best_point = explore.best_point(im_thresh, possible_points, robot_position)
 			rospy.loginfo(f"Best point: {best_point}")
 			path = pathplan.dijkstra(im_thresh, robot_position, best_point)
