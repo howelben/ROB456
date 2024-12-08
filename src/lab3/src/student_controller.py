@@ -60,9 +60,8 @@ class StudentController(RobotController):
 			im = np.array(map.data).reshape(map.info.height, map.info.width)
 			im_threshhold = pathplan.convert_image(im, 100, 0)
 			rospy.loginfo(f"Map_threshhold{im_threshhold}")
-			rospy.loginfo(f"Map{len(map)}")
 			
-			possible_points = explore.find_all_possible_goals(im)
+			possible_points = explore.find_all_possible_goals(im_threshhold)
 			rospy.loginfo(f"Possible points: {possible_points}")
 		except:
 			rospy.loginfo('No odometry information')

@@ -136,7 +136,6 @@ def find_all_possible_goals(im):
         goal_mask |= (unknown_mask & shifted_free_mask)
 
     possible_goals = np.argwhere(goal_mask)
-    print(possible_goals)
     flipped_goals = [(coord[1], coord[0]) for coord in possible_goals]
 
     return flipped_goals
