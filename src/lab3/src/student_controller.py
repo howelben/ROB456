@@ -61,7 +61,9 @@ class StudentController(RobotController):
 			im_thresh = pathplan.convert_image(im, 0.3, 0.7)
 			possible_points = explore.find_all_possible_goals(im_thresh)
 			best_point = explore.best_point(im_thresh, possible_points, robot_position)
+			rospy.loginfo(f"Best point: {best_point}")
 			path = pathplan.dijkstra(im_thresh, robot_position, best_point)
+			rospy.loginfo(f"Path: {path}")
 			waypoints = pathplan.find_waypoints(im_thresh, path)
 			rospy.loginfo(f"Waypoint:{waypoints}")
 		except:
