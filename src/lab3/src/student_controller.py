@@ -50,8 +50,11 @@ class StudentController(RobotController):
 		# It's possible that the position passed to this function is None.  This try-except block will deal
 		# with that.  Trying to unpack the position will fail if it's None, and this will raise an exception.
 		# We could also explicitly check to see if the point is None.
+		size_pix = map.info.resolution
+		origin = map.info.origin.position.x
+		im_size = (map.info.width, map.info.height)
   
-  
+
 		try:
 			# The (x, y) position of the robot can be retrieved like this.
 			robot_position = (point.point.x, point.point.y)
@@ -64,16 +67,19 @@ class StudentController(RobotController):
 		rospy.loginfo(f"Pixel size{map.info.resolution}")
 		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
 		rospy.loginfo(f"Array Size{im_thresh.size}")
-	
+		pix = explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin)
+		x_y = explore.convert_pix_to_x_y(im_size, pix, size_pix, origin)
+		rospy.loginfo(f"Pixel: {pix}")
+		rospy.loginfo(f"x_y:{x_y}")
 		#Convert robot position to pixel on the map. Robot position is -4.5, -4.5
-		possible_points = explore.find_all_possible_goals(im_thresh)
-		rospy.loginfo(f"Possible points: {possible_points}")
-		best_point = explore.best_point(im_thresh, possible_points, robot_position)
-		rospy.loginfo(f"Best point: {best_point}")
-		path = pathplan.dijkstra(im_thresh, robot_position, best_point)
-		rospy.loginfo(f"Path: {path}")
-		waypoints = pathplan.find_waypoints(im_thresh, path)
-		rospy.loginfo(f"Waypoint:{waypoints}")
+		# possible_points = explore.find_all_possible_goals(im_thresh)
+		# rospy.loginfo(f"Possible points: {possible_points}")
+		# best_point = explore.best_point(im_thresh, possible_points, robot_position)
+		# rospy.loginfo(f"Best point: {best_point}")
+		# path = pathplan.dijkstra(im_thresh, robot_position, best_point)
+		# rospy.loginfo(f"Path: {path}")
+		# waypoints = pathplan.find_waypoints(im_thresh, path)
+		# rospy.loginfo(f"Waypoint:{waypoints}")
 
 if __name__ == '__main__':
 	# Initialize the node.

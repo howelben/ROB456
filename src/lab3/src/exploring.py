@@ -73,7 +73,7 @@ def plot_with_explore_points(im_threshhold, zoom=1.0, robot_loc=None, explore_po
 
 
 # -------------- For converting to the map and back ---------------
-def convert_pix_to_x_y(im_size, pix, size_pix):
+def convert_pix_to_x_y(im_size, pix, size_pix, origin):
     """Convert a pixel location [0..W-1, 0..H-1] to a map location (see slides)
     Note: Checks if pix is valid (in map)
     @param im_size - width, height of image
@@ -83,18 +83,18 @@ def convert_pix_to_x_y(im_size, pix, size_pix):
     if not (0 <= pix[0] <= im_size[1]) or not (0 <= pix[1] <= im_size[0]):
         raise ValueError(f"Pixel {pix} not in image, image size {im_size}")
 
-    return [size_pix * pix[i] / im_size[1-i] for i in range(0, 2)]
+    x_y = [size_pix * pix[i] + origin for i in range(0, 2)]
+    return x_y
 
 
-
-def convert_x_y_to_pix(im_size, x_y, size_pix):
+def convert_x_y_to_pix(im_size, x_y, size_pix, origin):
     """Convert a map location to a pixel location [0..W-1, 0..H-1] in the image/map
     Note: Checks if x_y is valid (in map)
     @param im_size - width, height of image
     @param x_y - tuple with x,y in meters
     @param size_pix - size of pixel in meters
     @return i, j (integers) """
-    pix = [int(x_y[i] * im_size[1-i] / size_pix) for i in range(0, 2)]
+    pix = [int((x_y[i]-origin) / size_pix) for i in range(0, 2)]
 
     if not (0 <= pix[0] <= im_size[1]) or not (0 <= pix[1] <= im_size[0]):
         raise ValueError(f"Loc {x_y} not in image, image size {im_size}")
