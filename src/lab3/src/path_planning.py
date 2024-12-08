@@ -116,8 +116,8 @@ def convert_image(im, wall_threshold, free_threshold):
     im_avg = im_avg / np.max(im_avg)
     # threshold
     #   in our example image, black is walls, white is free
-    im_ret[im_avg > wall_threshold] = 0
-    im_ret[im_avg < free_threshold] = 255
+    im_ret[im_avg < wall_threshold] = 0
+    im_ret[im_avg > free_threshold] = 255
     return im_ret
 
 
