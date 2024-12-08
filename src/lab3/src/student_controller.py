@@ -58,8 +58,12 @@ class StudentController(RobotController):
 
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 			im = np.array(map.data).reshape(map.info.height, map.info.width)
+			unique, counts = np.unique(a, return_counts=True)
+			rospy.loginfo(dict(zip(unique, counts)))
 			rospy.loginfo(f"Map: {im}")
 			im_threshhold = pathplan.convert_image(im, 0.3, 0.7)
+			unique, counts = np.unique(a, return_counts=True)
+			rospy.loginfo(dict(zip(unique, counts)))
 			rospy.loginfo(f"Map_threshhold{im_threshhold}")
 			
 			possible_points = explore.find_all_possible_goals(im_threshhold)
