@@ -108,17 +108,25 @@ def convert_image(im, wall_threshold, free_threshold):
     # Assume all is unseen
     im_ret = np.zeros((im.shape[0], im.shape[1]), dtype='uint8') + 128
 
-    im_avg = im
+    # Handle unseen pixels (-1)
+    im_avg = np.where(im == -1, -1, im)  # Mark -1 cells (unseen)
+
     if len(im.shape) == 3:
         # RGB image - convert to gray scale
-        im_avg = np.mean(im, axis=2)
-    # Force into 0,1
+        im_avg = np.mean(im_avg, axis=2)
+    
+    # Normalize to [0, 1] range
     im_avg = im_avg / np.max(im_avg)
-    # threshold
-    #   in our example image, black is walls, white is free
-    im_ret[im_avg < wall_threshold] = 0
-    im_ret[im_avg > free_threshold] = 255
+
+    # Apply thresholds
+    im_ret[im_avg < wall_threshold] = 0      # Free space
+    im_ret[im_avg > free_threshold] = 255    # Wall
+
+    # Restore unseen pixels
+    im_ret[im == -1] = 128  # Ensure unseen pixels are set to 128
+
     return im_ret
+
 
 
 # -------------- Getting 4 or 8 neighbors ---------------
