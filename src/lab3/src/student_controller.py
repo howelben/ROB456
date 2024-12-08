@@ -4,6 +4,9 @@
 import sys
 import rospy
 import signal
+import numpy as np
+import path_planning as pathplan
+import exploring as explore
 
 from controller import RobotController
 
@@ -47,11 +50,17 @@ class StudentController(RobotController):
 		# It's possible that the position passed to this function is None.  This try-except block will deal
 		# with that.  Trying to unpack the position will fail if it's None, and this will raise an exception.
 		# We could also explicitly check to see if the point is None.
+  
+  
 		try:
 			# The (x, y) position of the robot can be retrieved like this.
 			robot_position = (point.point.x, point.point.y)
 
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
+			im = np.array(map.data).reshape(map.info.height, map.info.width)
+			im = pathplan.convert_image(im, 100, 0)
+			possible_points = explore.find_all_possible_goals(im)
+			print(possible_points)
 		except:
 			rospy.loginfo('No odometry information')
 
@@ -66,6 +75,11 @@ if __name__ == '__main__':
 	# This will move the robot to a set of fixed waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
+	try:
+		print(controller.point.point.x)
+	except: 
+		print("Try this")
+		print(controller.point.x)
 	controller.set_waypoints(((-4, -3), (-4, 0), (5, 0)))
 
 	# Once you call this function, control is given over to the controller, and the robot will start to

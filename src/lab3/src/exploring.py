@@ -86,6 +86,7 @@ def convert_pix_to_x_y(im_size, pix, size_pix):
     return [size_pix * pix[i] / im_size[1-i] for i in range(0, 2)]
 
 
+
 def convert_x_y_to_pix(im_size, x_y, size_pix):
     """Convert a map location to a pixel location [0..W-1, 0..H-1] in the image/map
     Note: Checks if x_y is valid (in map)
