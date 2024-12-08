@@ -66,19 +66,19 @@ class StudentController(RobotController):
 		im = np.array(map.data).reshape(map.info.height, map.info.width)
 		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
 		possible_points = explore.find_all_possible_goals(im_thresh)
-		rospy.loginfo(f"Possible points: {possible_points}")
 		robot_pix = explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin)
 		rospy.loginfo(f"Robot pixel: {robot_pix}")
-		# best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
+		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
 		# rospy.loginfo(f"Best point: {best_point}")
 		# path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
 		# rospy.loginfo(f"Path: {path}")
 		# waypoints = explore.find_waypoints(im_thresh, path)
-		for point in possible_points:
+		for point in best_point:
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
 		waypoints_xy = tuple(waypoints_xy)
 		controller.set_waypoints(waypoints_xy)
+		controller.send_points()
 if __name__ == '__main__':
 	# Initialize the node.
 	rospy.init_node('student_controller', argv=sys.argv)
