@@ -93,6 +93,7 @@ def is_free(im, pix):
     """ Is the pixel empty?
     @param im - the image
     @param pix - the pixel i,j"""
+    print(pix)
     if im[pix[1], pix[0]] == 255:
         return True
     return False
@@ -210,6 +211,7 @@ def dijkstra(im, robot_loc, goal_loc):
             continue
         visited[node_ij] = (visited_distance, visited_parent, True)
         for adj_node in eight_connected(node_ij):
+            print(adj_node)
             if not is_free(im, adj_node):
                 continue
             if adj_node in visited and visited[adj_node][2] == True:
