@@ -75,12 +75,7 @@ if __name__ == '__main__':
 	# This will move the robot to a set of fixed waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
-	try:
-		print(controller.point.point.x)
-	except: 
-		print("Try this")
-		print(controller.point.x)
-	controller.set_waypoints(((-4, -3), (-4, 0), (5, 0)))
+
 
 	# Once you call this function, control is given over to the controller, and the robot will start to
 	# move.  This function will never return, so any code below it in the file will not be executed.
