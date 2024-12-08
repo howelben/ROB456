@@ -53,8 +53,8 @@ class StudentController(RobotController):
 		waypoints_xy = ()
 		size_pix = map.info.resolution
 		origin = map.info.origin.position.x
-		im_size = (map.info.width, map.info.height)
-  
+		im_size = [map.info.width, map.info.height]
+		rospy.loginfo(f"Image size: {im_size}")
 
 		try:
 			# The (x, y) position of the robot can be retrieved like this.
@@ -64,10 +64,7 @@ class StudentController(RobotController):
 			rospy.loginfo('No odometry information')
 
 		im = np.array(map.data).reshape(map.info.height, map.info.width)
-		rospy.loginfo(f"Height: {map.info.height}, Width: {map.info.height}, Origin:{ map.info.origin.position.x}, {map.info.origin.position.y}")
-		rospy.loginfo(f"Pixel size{map.info.resolution}")
 		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
-		rospy.loginfo(f"Array Size{im_thresh.size}")
 		possible_points = explore.find_all_possible_goals(im_thresh)
 		rospy.loginfo(f"Possible points: {possible_points}")
 		robot_pix = explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin)
