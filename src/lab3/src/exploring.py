@@ -131,12 +131,12 @@ def find_all_possible_goals(im):
     free_mask = (im == 255)  
 
     goal_mask = np.zeros_like(im, dtype=bool)
-
     for di, dj in neighbors:
         shifted_free_mask = np.roll(np.roll(free_mask, di, axis=0), dj, axis=1)
         goal_mask |= (unknown_mask & shifted_free_mask)
 
     possible_goals = np.argwhere(goal_mask)
+    print(possible_goals)
     flipped_goals = [(coord[1], coord[0]) for coord in possible_goals]
 
     return flipped_goals
