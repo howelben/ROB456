@@ -37,7 +37,7 @@ class StudentController(RobotController):
 		'''
 		This function is called every time a new map update is available from the SLAM system.  If you want
 		to change where the robot is driving, you can do it in this function.  If you generate a path for
-		the robot to follow, you can pass it to the driver code using set_waypoints().  Again, this will
+		the robot to follow, you can pass itS to the driver code using set_waypoints().  Again, this will
 		override any current set of waypoints that you might have previously sent.
 
 		Parameters:
@@ -58,8 +58,9 @@ class StudentController(RobotController):
 
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 			im = np.array(map.data).reshape(map.info.height, map.info.width)
-			im = pathplan.convert_image(im, 100, 0)
-			print(f"Map{im}")
+			im_threshhold = pathplan.convert_image(im, 100, 0)
+			print(f"Map_threshhold{im_threshhold}")
+			print(f"Map{map}")
 			possible_points = explore.find_all_possible_goals(im)
 			print(f"Possible points: {possible_points}")
 		except:
