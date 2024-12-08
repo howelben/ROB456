@@ -60,7 +60,8 @@ class StudentController(RobotController):
 			im = np.array(map.data).reshape(map.info.height, map.info.width)
 			im_threshhold = pathplan.convert_image(im, 100, 0)
 			print(f"Map_threshhold{im_threshhold}")
-			print(f"Map{map}")
+			print(f"Map{len(map)}")
+			
 			possible_points = explore.find_all_possible_goals(im)
 			print(f"Possible points: {possible_points}")
 		except:
