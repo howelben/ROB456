@@ -119,8 +119,8 @@ def convert_image(im, wall_threshold, free_threshold):
     im_avg = im_avg / np.max(im_avg)
 
     # Apply thresholds
-    im_ret[im_avg < wall_threshold] = 0   # Free space
-    im_ret[im_avg > free_threshold] =  255  # Wall
+    im_ret[im_avg < wall_threshold] = 0   
+    im_ret[im_avg > free_threshold] =  255  
 
     # Restore unseen pixels
     im_ret[im == -1] = 128  # Ensure unseen pixels are set to 128
