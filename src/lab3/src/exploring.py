@@ -161,6 +161,7 @@ def find_best_point(im, possible_points, robot_loc):
             free_points.append(neighbor)
     #Select farthest free pont
     distances = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in free_points]
+    print(distances)
     best_point, _ = max(distances, key=lambda x: x[1])
     return best_point
 
