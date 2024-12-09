@@ -34,7 +34,7 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if self.last_distance >= distance:
+		if self.last_distance <= distance:
 			rospy.loginfo("Remove point")
 			self.waypoints.pop(0)
 			tup_waypoints = tuple(self.waypoints)
