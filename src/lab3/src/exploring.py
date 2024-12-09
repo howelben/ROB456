@@ -136,9 +136,9 @@ def find_all_possible_goals(im):
         goal_mask |= (unknown_mask & shifted_free_mask)
 
     possible_goals = np.argwhere(goal_mask)
-    flipped_goals = [(coord[1], coord[0]) for coord in possible_goals]
+    goals = [(coord[0], coord[1]) for coord in possible_goals]
 
-    return flipped_goals
+    return goals
 
 
 def find_best_point(im, possible_points, robot_loc):
