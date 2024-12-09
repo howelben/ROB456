@@ -101,6 +101,7 @@ def convert_x_y_to_pix(im_size, x_y, size_pix, origin):
     return pix
 
 
+
 def is_reachable(im, pix):
     """ Is the pixel reachable, i.e., has a neighbor that is free?
     Used for
@@ -131,14 +132,15 @@ def find_all_possible_goals(im):
     free_mask = (im == 255)  
 
     goal_mask = np.zeros_like(im, dtype=bool)
+
     for di, dj in neighbors:
         shifted_free_mask = np.roll(np.roll(free_mask, di, axis=0), dj, axis=1)
         goal_mask |= (unknown_mask & shifted_free_mask)
 
     possible_goals = np.argwhere(goal_mask)
-    goals = [(coord[0], coord[1]) for coord in possible_goals]
+    flipped_goals = [(coord[1], coord[0]) for coord in possible_goals]
 
-    return goals
+    return flipped_goals
 
 
 def find_best_point(im, possible_points, robot_loc):
@@ -161,7 +163,6 @@ def find_best_point(im, possible_points, robot_loc):
             free_points.append(neighbor)
     #Select farthest free pont
     distances = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in free_points]
-    print(distances)
     best_point, _ = max(distances, key=lambda x: x[1])
     return best_point
 
