@@ -21,6 +21,7 @@ class StudentController(RobotController):
 		super().__init__()
 		self.waypoints = []
 		self.last_distance = 0
+		self.count = 0
 
 	def distance_update(self,  distance):
 		'''
@@ -35,10 +36,12 @@ class StudentController(RobotController):
 		'''
 		rospy.loginfo(f'Distance: {distance}')
 		if self.last_distance <= distance:
-			rospy.loginfo("Remove point")
-			self.waypoints.pop(0)
-			tup_waypoints = tuple(self.waypoints)
-			controller.set_waypoints(tup_waypoints)
+			count = count+1
+			if count >= 25:
+				rospy.loginfo("Remove point")
+				self.waypoints.pop(0)
+				tup_waypoints = tuple(self.waypoints)
+				controller.set_waypoints(tup_waypoints)
 		self.last_distance = distance
 	
 
