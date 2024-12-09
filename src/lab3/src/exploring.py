@@ -154,25 +154,27 @@ def find_best_point(im, possible_points, robot_loc):
     if not possible_points:
         raise ValueError("No possible points to explore.")
     
-    free_neighbors = []
+    distances_to_unseen = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))
+                           for point in possible_points]
+    farthest_unseen, _ = max(distances_to_unseen, key=lambda x: x[1])
 
-    # Iterate through all unseen points
-    for point in possible_points:
-        # Check all eight-connected neighbors of the unseen point
-        for neighbor in path_planning.eight_connected(point):
-            if path_planning.is_free(im, neighbor):
-                free_neighbors.append(neighbor)
+    # Iteratively search for free neighbors, increasing search radius if necessary
+    layer = 1
+    while True:
+        neighbors = path_planning.eight_connected(farthest_unseen)
+        free_neighbors = [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
 
-    # If no free neighbors were found, raise an exception
-    if not free_neighbors:
-        raise ValueError("No free points found near unseen points.")
+        if free_neighbors:
+            # If free neighbors are found, pick the closest one to the farthest unseen point
+            distances_to_free = [(point, np.linalg.norm(np.array(point) - np.array(farthest_unseen)))
+                                 for point in free_neighbors]
+            closest_free, _ = min(distances_to_free, key=lambda x: x[1])
+            return closest_free
 
-    # Find the farthest free neighbor from the robot's location
-    distances = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))
-                 for point in free_neighbors]
-    farthest_point, _ = max(distances, key=lambda x: x[1])
-
-    return farthest_point
+        # Increase the search radius if no free neighbors are found
+        layer += 1
+        if layer > max(im.shape):  # Prevent infinite search
+            raise ValueError("No free points found after exhaustive search.")
 
 
 def find_waypoints(im, path, res=0.95):
