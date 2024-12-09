@@ -35,10 +35,11 @@ class StudentController(RobotController):
 		'''
 		rospy.loginfo(f'Distance: {distance}')
 		if self.last_distance >= distance:
+			rospy.loginfo("Remove point")
 			self.waypoints.pop(0)
 			tup_waypoints = tuple(self.waypoints)
 			controller.set_waypoints(tup_waypoints)
-		distance = self.last_distance
+		self.last_distance = distance
 	
 
 	def map_update(self, point, map, map_data):
