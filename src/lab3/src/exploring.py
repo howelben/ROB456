@@ -219,6 +219,7 @@ def find_waypoints(im, path, res=0.95):
         # If the curvature is not 1, then we have a corner
         if curvature < 1.00:
             corners.append(split_path[i])
+    del corners[0]
     #corners.append(path[-1])
     return corners
 

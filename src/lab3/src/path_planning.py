@@ -247,7 +247,6 @@ def dijkstra(im, robot_loc, goal_loc):
         current = visited[current][1]
 
     path = path[::-1]
-    print(path)
     return path # Return the path in start-to-goal order
   
 
