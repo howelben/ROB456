@@ -69,7 +69,7 @@ class StudentDriver(Driver):
 					theta -= 0.25
 				elif -1.0 < angle_rad <= -0.3:  # Right region
 					theta += 0.25
-				if range < 0.4:
+				if range < 0.2:
 					if 1.0 <= angle_rad < 1.4:  # Extreme Left region
 						theta -= 0.6
 					elif -1.4 < angle_rad <= -1.0:
