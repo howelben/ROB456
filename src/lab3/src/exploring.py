@@ -138,9 +138,9 @@ def find_all_possible_goals(im):
         goal_mask |= (unknown_mask & shifted_free_mask)
 
     possible_goals = np.argwhere(goal_mask)
-    flipped_goals = [(coord[0], coord[1]) for coord in possible_goals]
+    goals = [(coord[0], coord[1]) for coord in possible_goals]
 
-    return flipped_goals
+    return goals
 
 
 def find_best_point(im, possible_points, robot_loc):
@@ -154,27 +154,42 @@ def find_best_point(im, possible_points, robot_loc):
     if not possible_points:
         raise ValueError("No possible points to explore.")
     
+    def dfs_find_free(im, point, visited):
+        """
+        Perform Depth-First Search to find the closest free point.
+        @param im: 2D array representing the thresholded image.
+        @param point: The starting point for DFS.
+        @param visited: Set of visited points to avoid cycles.
+        @return: The first free point found, or None if none is found.
+        """
+        stack = [point]  # DFS uses a stack (LIFO)
+        while stack:
+            current = stack.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+
+            # Check if the current point is free
+            if path_planning.is_free(im, current):
+                return current
+
+            # Add neighbors to the stack
+            stack.extend(path_planning.eight_connected(current))
+
+        return None  # No free point found
+
+    # Find the farthest unseen point from the robot's location
     distances_to_unseen = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))
                            for point in possible_points]
     farthest_unseen, _ = max(distances_to_unseen, key=lambda x: x[1])
 
-    # Iteratively search for free neighbors, increasing search radius if necessary
-    layer = 1
-    while True:
-        neighbors = path_planning.eight_connected(farthest_unseen)
-        free_neighbors = [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
+    # Use DFS to find the closest free point near the farthest unseen point
+    visited = set()
+    best_point = dfs_find_free(im, farthest_unseen, visited)
+    if best_point is None:
+        raise ValueError("No free points found in the search area.")
 
-        if free_neighbors:
-            # If free neighbors are found, pick the closest one to the farthest unseen point
-            distances_to_free = [(point, np.linalg.norm(np.array(point) - np.array(farthest_unseen)))
-                                 for point in free_neighbors]
-            closest_free, _ = min(distances_to_free, key=lambda x: x[1])
-            return closest_free
-
-        # Increase the search radius if no free neighbors are found
-        layer += 1
-        if layer > max(im.shape):  # Prevent infinite search
-            raise ValueError("No free points found after exhaustive search.")
+    return best_point
 
 
 def find_waypoints(im, path, res=0.95):
