@@ -97,4 +97,4 @@ if __name__ == '__main__':
 
 	# Once you call this function, control is given over to the controller, and the robot will start to
 	# move.  This function will never return, so any code below it in the file will not be executed.
-	#controller.send_points()
+	controller.send_points()
