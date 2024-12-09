@@ -210,7 +210,6 @@ def dijkstra(im, robot_loc, goal_loc):
             continue
         visited[node_ij] = (visited_distance, visited_parent, True)
         for adj_node in eight_connected(node_ij):
-            print(adj_node)
             if not is_free(im, adj_node):
                 continue
             if adj_node in visited and visited[adj_node][2] == True:
