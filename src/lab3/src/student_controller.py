@@ -82,7 +82,7 @@ class StudentController(RobotController):
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
 		waypoints_xy = tuple(waypoints_xy)
 		controller.set_waypoints(waypoints_xy)
-	#	controller.send_points()
+		controller.send_points()
 if __name__ == '__main__':
 	# Initialize the node.
 	rospy.init_node('student_controller', argv=sys.argv)
