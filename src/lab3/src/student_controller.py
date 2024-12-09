@@ -35,7 +35,7 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if self.last_distance <= distance:
+		if self.last_distance <= distance and self.waypoints:
 			self.count = self.count+1
 			if self.count >= 25:
 				self.count = 0
@@ -92,7 +92,7 @@ class StudentController(RobotController):
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
-		if len(self.waypoints) < 2:
+		if len(self.waypoints) < 3:
 			self.waypoints = waypoints_xy
 			waypoints_xy = tuple(waypoints_xy)
 			controller.set_waypoints(waypoints_xy)
