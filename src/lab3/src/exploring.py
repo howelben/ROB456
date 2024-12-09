@@ -151,17 +151,17 @@ def find_best_point(im, possible_points, robot_loc):
     if not possible_points:
         raise ValueError("No possible points to explore.")
     
-    distances = [(np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in possible_points]
+    distances = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in possible_points]
     
     # Select the farthest point
-    best_point, _ = max(distances)
+    best_point, _ = max(distances, key=lambda x: x[1])
     free_points = []
     for neighbor in path_planning.eight_connected(best_point):
         if path_planning.is_free(im, neighbor):
             free_points.append(neighbor)
     #Select farthest free pont
-    distances = [(np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in free_points]
-    best_point, _ = max(distances)
+    distances = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in free_points]
+    best_point, _ = max(distances, key=lambda x: x[1])
     return best_point
 
 def find_waypoints(im, path, res=0.95):
