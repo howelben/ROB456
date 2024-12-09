@@ -92,7 +92,7 @@ def convert_x_y_to_pix(im_size, x_y, size_pix, origin):
     Note: Checks if x_y is valid (in map)
     @param im_size - width, height of image
     @param x_y - tuple with x,y in meters
-    @param size_pix - size of pixel in meters
+    @param size4_pix - size of pixel in meters
     @return i, j (integers) """
     pix = [int((x_y[i]-origin) / size_pix) for i in range(0, 2)]
 
