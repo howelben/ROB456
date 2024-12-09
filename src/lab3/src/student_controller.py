@@ -68,7 +68,7 @@ class StudentController(RobotController):
 		possible_points = explore.find_all_possible_goals(im_thresh)
 		robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
 		rospy.loginfo(f"Is the robot location free: {pathplan.is_free(im_thresh, robot_pix)} ")
-		robot_pix = robot_pix[::-1]
+		#robot_pix = robot_pix[::-1]
 
 		rospy.loginfo(f"Robot pixel: {robot_pix}")
 		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
