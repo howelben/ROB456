@@ -33,7 +33,7 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if distance < 0.5:
+		if distance < 0.6:
 			self.waypoints.pop(0)
 		if self.waypoints:
 			controller.set_waypoints(self.waypoints)
