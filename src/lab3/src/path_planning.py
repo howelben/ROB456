@@ -119,8 +119,8 @@ def convert_image(im, wall_threshold, free_threshold):
     im_avg = im_avg / np.max(im_avg)
 
     # Apply thresholds
-    im_ret[im_avg < wall_threshold] = 0   
-    im_ret[im_avg > free_threshold] =  255  
+    im_ret[im_avg < wall_threshold] = 255   # Free space
+    im_ret[im_avg > free_threshold] = 0  # Wall
 
     # Restore unseen pixels
     im_ret[im == -1] = 128  # Ensure unseen pixels are set to 128
@@ -160,7 +160,7 @@ def dijkstra(im, robot_loc, goal_loc):
     @param robot_loc - where the robot is (tuple, i,j)
     @param goal_loc - where to go to (tuple, i,j)
     @returns a list of tuples"""
-    print(f"Robot loc: {robot_loc}")
+
     # Sanity check
     if not is_free(im, robot_loc):
         raise ValueError(f"Start location {robot_loc} is not in the free space of the map")

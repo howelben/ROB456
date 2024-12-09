@@ -154,6 +154,8 @@ def find_best_point(im, possible_points, robot_loc):
         raise ValueError("No possible points to explore.")
     
     distances = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))for point in possible_points]
+    for point in possible_points:
+        np.linalg.norm(np.array(point) - np.array(robot_loc))
     
     # Select the farthest point
     best_point, _ = max(distances, key=lambda x: x[1])
