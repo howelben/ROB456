@@ -84,9 +84,9 @@ class StudentController(RobotController):
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
-		waypoints_xy = tuple(waypoints_xy)
 		if len(self.waypoints) < 1:
 			self.waypoints = waypoints_xy
+			waypoints_xy = tuple(waypoints_xy)
 			controller.set_waypoints(waypoints_xy)
 if __name__ == '__main__':
 	# Initialize the node.
