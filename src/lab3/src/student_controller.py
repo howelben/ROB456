@@ -78,7 +78,7 @@ class StudentController(RobotController):
 		rospy.loginfo(f"Length of waypoitns: {len(waypoints)}")
 		for point in waypoints:
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
-			waypoints_xy.append(waypoint[::-1])
+			waypoints_xy.append(waypoint)
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
 		waypoints_xy = tuple(waypoints_xy)
 		controller.set_waypoints(waypoints_xy)
