@@ -153,11 +153,6 @@ def find_best_point(im, possible_points, robot_loc):
     # Check if there are any possible points to explore
     if not possible_points:
         raise ValueError("No possible points to explore.")
-    
-    def find_free_neighbors(im, start_point):
-        """Search for free neighbors of a point."""
-        neighbors = path_planning.eight_connected(start_point)
-        return [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
 
     def expand_search(im, start_point):
         """Expand search layer-by-layer until a free point is found."""
@@ -171,7 +166,8 @@ def find_best_point(im, possible_points, robot_loc):
             visited.add(current)
 
             # Check for free neighbors
-            free_neighbors = find_free_neighbors(im, current)
+            neighbors = path_planning.eight_connected(current)
+            free_neighbors = [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
             if free_neighbors:
                 return free_neighbors[0]  # Return the first free point found
 
@@ -184,9 +180,10 @@ def find_best_point(im, possible_points, robot_loc):
     # Find the farthest unseen point from the robot's location
     distances_to_unseen = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))
                            for point in possible_points]
-    farthest_unseen, _ = max(distances_to_unseen, key=lambda x: x[1])
+    farthest_unseen, _ = min(distances_to_unseen, key=lambda x: x[1])
 
     # Find the closest free point near the farthest unseen point
+    
     best_point = expand_search(im, farthest_unseen)
     return best_point
 
