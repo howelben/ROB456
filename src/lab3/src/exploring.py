@@ -180,7 +180,7 @@ def find_best_point(im, possible_points, robot_loc):
     # Find the farthest unseen point from the robot's location
     distances_to_unseen = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))
                            for point in possible_points]
-    farthest_unseen, _ = min(distances_to_unseen, key=lambda x: x[1])
+    farthest_unseen, _ = max(distances_to_unseen, key=lambda x: x[1])
 
     # Find the closest free point near the farthest unseen point
     

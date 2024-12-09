@@ -20,7 +20,7 @@ class StudentController(RobotController):
 	def __init__(self):
 		super().__init__()
 
-	def distance_update(self, distance):
+	def distance_update(self,  distance):
 		'''
 		This function is called every time the robot moves towards a goal.  If you want to make sure that
 		the robot is making progress towards it's goal, then you might want to check that the distance to
@@ -31,6 +31,7 @@ class StudentController(RobotController):
 		Parameters:
 			distance:	The distance to the current goal.
 		'''
+      
 		rospy.loginfo(f'Distance: {distance}')
 
 	def map_update(self, point, map, map_data):
