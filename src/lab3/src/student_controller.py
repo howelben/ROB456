@@ -36,9 +36,9 @@ class StudentController(RobotController):
 		'''
 		rospy.loginfo(f'Distance: {distance}')
 		if distance >= 0.3: 
-			count = count + 1
-		if count == 150:
-			count = 0
+			self.count = self.count + 1
+		if self.count == 150:
+			self.count = 0
 			if self.waypoints:
 				self.seen_goals.append(self.waypoints[-1])
 			controller.set_waypoints(self.waypoints[0])
