@@ -37,8 +37,8 @@ class StudentController(RobotController):
 		'''
 		rospy.loginfo(f'Distance: {distance}')
 		if distance < 0.6:
-			rospy.loginfo(f"Waypoint {self.current_waypoint} reached.")
-			self.waypoints.remove(self.current_waypoint)
+			rospy.loginfo(f"Waypoint reached.")
+			self.waypoints.pop(0)
    
 		self.count += 1
 		if self.count >= 150:  # Adjust this threshold as needed
