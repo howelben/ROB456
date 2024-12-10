@@ -22,7 +22,7 @@ class StudentController(RobotController):
 		self.waypoints = []
 		self.distance_history = []
 		self.count = 0
-		self.waypoint_length = 0
+		self.seen_goals = []
 	def distance_update(self,  distance):
 		'''
 		This function is called every time the robot moves towards a goal.  If you want to make sure that
@@ -35,6 +35,18 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
+		if self.waypoints:
+			if self.waypoints[-1] < 0.8:
+				self.seen_goals.append(self.waypoints[-1])
+				self.waypoints = []
+		if distance >= 0.3: 
+			count = count + 1
+		if count == 150:
+			count = 0
+			if self.waypoints:
+				self.seen_goals.append(self.waypoints[-1])
+			controller.set_waypoints(self.waypoints[0])
+		
 
 
 
@@ -59,9 +71,6 @@ class StudentController(RobotController):
 		size_pix = map.info.resolution
 		origin = map.info.origin.position.x
 		im_size = [map.info.width, map.info.height]
-		seen_points = []
-		point_seen = False
-		rospy.loginfo(f"Image size: {im_size}")
 
 		try:
 			# The (x, y) position of the robot can be retrieved like this.
@@ -75,34 +84,20 @@ class StudentController(RobotController):
 		possible_points = explore.find_all_possible_goals(im_thresh)
 		robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
 		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
-		path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
-		waypoints = explore.find_waypoints(im_thresh, path)
-		for point in waypoints:
-			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
-			waypoints_xy.append(waypoint)
-		waypoints_xy = tuple(waypoints_xy)
-		controller.set_waypoints(waypoints_xy)
-		waypoints_xy = []
-		for point in possible_points:
-			if seen_points:
-				for seen_point in seen_points:
-					point_xy = explore.convert_pix_to_x_y(im_size, point, size_pix, origin)
-					seen_point_xy = explore.convert_pix_to_x_y(im_size, seen_point, size_pix, origin)
-					if np.linalg.norm(np.array(point_xy) - np.array(seen_point_xy)) <= 1:
-						point_seen = True
-						break
-			if point_seen == True:
-				seen_points.append(point)
-				point_seen = False
-				continue
-			else:
-				path = pathplan.dijkstra(im_thresh, robot_pix, point)
+		best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
+		if not self.waypoints:		
+			if best_point_xy not in self.seen_goals:
+				path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
 				waypoints = explore.find_waypoints(im_thresh, path)
-				for new_point in waypoints:
-					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, new_point, size_pix, origin))
+				for point in waypoints:
+					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 					waypoints_xy.append(waypoint)
+				self.waypoints = waypoints_xy
 				waypoints_xy = tuple(waypoints_xy)
 				controller.set_waypoints(waypoints_xy)
+		
+		
+		
        
 				
 
