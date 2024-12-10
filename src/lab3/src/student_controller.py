@@ -35,10 +35,6 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if self.waypoints:
-			if self.waypoints[-1] < 0.8:
-				self.seen_goals.append(self.waypoints[-1])
-				self.waypoints = []
 		if distance >= 0.3: 
 			count = count + 1
 		if count == 150:
@@ -85,16 +81,14 @@ class StudentController(RobotController):
 		robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
 		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
 		best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
-		if not self.waypoints:		
-			if best_point_xy not in self.seen_goals:
-				path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
-				waypoints = explore.find_waypoints(im_thresh, path)
-				for point in waypoints:
-					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
-					waypoints_xy.append(waypoint)
-				self.waypoints = waypoints_xy
-				waypoints_xy = tuple(waypoints_xy)
-				controller.set_waypoints(waypoints_xy)
+		path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
+		waypoints = explore.find_waypoints(im_thresh, path)
+		for point in waypoints:
+			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
+			waypoints_xy.append(waypoint)
+		self.waypoints = waypoints_xy
+		waypoints_xy = tuple(waypoints_xy)
+		controller.set_waypoints(waypoints_xy)
 		
 		
 		
