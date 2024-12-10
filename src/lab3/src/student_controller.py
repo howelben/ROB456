@@ -91,7 +91,7 @@ class StudentController(RobotController):
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
 		if self.waypoints:
 			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(robot_position))
-		if not self.waypoints or dist < 2.0:
+		if not self.waypoints or dist < 1.5:
 				rospy.loginfo("Calculating new path")
 				possible_points = explore.find_all_possible_goals(im)
 				robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
@@ -115,10 +115,8 @@ class StudentController(RobotController):
 				self.waypoints = waypoints_xy
 				self.seen_goals.append(waypoints_xy[-1])
 				waypoints_xy = tuple(waypoints_xy)
-				if self.current_best_point in self.waypoints:
-					rospy.loginfo("Best point is in waypoints")
 				controller.set_waypoints(waypoints_xy)
-       
+		rospy.loginfo(f"Length of seen goals: {len(self.seen_goals)}")
 				
 
 
