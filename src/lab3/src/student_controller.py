@@ -49,7 +49,8 @@ class StudentController(RobotController):
 				self.waypoints.pop(0)
 				if self.waypoints:
 					controller.set_waypoints(self.waypoints)
-	
+		if distance < 0.3 and self.waypoints:
+			self.waypoints.pop(0)
 
 	def map_update(self, point, map, map_data):
 		'''
@@ -97,7 +98,7 @@ class StudentController(RobotController):
 			waypoints_xy.append(waypoint)
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
 		rospy.loginfo(f"Amount of waypoints left: {len(self.waypoints)}")
-		if len(self.waypoints) < 3 or not self.waypoints:
+		if not self.waypoints:
 			self.waypoints = waypoints_xy
 			waypoints_xy = tuple(waypoints_xy)
 			controller.set_waypoints(waypoints_xy)
