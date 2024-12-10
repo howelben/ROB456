@@ -39,10 +39,6 @@ class StudentController(RobotController):
 		if distance < 0.8:
 			rospy.loginfo(f"Waypoint reached.")
 			self.count = 0
-			try:
-				self.waypoints.pop(0)
-			except:
-				rospy.loginfo("No points")
    
 		self.count += 1
 		if self.count >= 150:  # Adjust this threshold as needed
@@ -91,8 +87,10 @@ class StudentController(RobotController):
 		
 	def path_update(self, im, robot_position, size_pix, origin, im_size):
 		waypoints_xy = []
-		rospy.loginfo(f"Self waypoints size: {self.waypoints}")
-		if not self.waypoints:
+		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
+		if self.waypoints:
+			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(robot_position))
+		if dist < 1.0:
 			rospy.loginfo("Calculating new path")
 			possible_points = explore.find_all_possible_goals(im)
 			robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
