@@ -171,87 +171,67 @@ def dijkstra(im, robot_loc, goal_loc):
     if not is_free(im, goal_loc):
         raise ValueError(f"Goal location {goal_loc} is not in the free space of the map")
 
-    # The priority queue itself is just a list, with elements of the form (weight, (i,j))
-    #    - i.e., a tuple with the first element the weight/score, the second element a tuple with the pixel location
+    # The priority queue
     priority_queue = []
-    # Push the start node onto the queue
-    #   push takes the queue itself, then a tuple with the first element the priority value and the second
-    #   being whatever data you want to keep - in this case, the robot location, which is a tuple
     heapq.heappush(priority_queue, (0, robot_loc))
 
-    # The power of dictionaries - we're going to use a dictionary to store every node we've visited, along
-    #   with the node we came from and the current distance
-    # This is easier than trying to get the distance from the heap
-    visited = {}
-    # Use the (i,j) tuple to index the dictionary
-    #   Store the best distance, the parent, and if closed y/n
-    visited[robot_loc] = (0, None, False)   # For every other node this will be the current_node, distance
+    # Dictionary to track visited nodes: (distance, parent, closed)
+    visited = {robot_loc: (0, None, False)}
 
-    # While the list is not empty - use a break for if the node is the end node
     while priority_queue:
-        # Get the current best node off of the list
-        current_node = heapq.heappop(priority_queue)
-        # Pop returns the value and the i, j
-        node_score = current_node[0]
-        node_ij = current_node[1]
+        # Pop the current node with the lowest cost
+        node_score, node_ij = heapq.heappop(priority_queue)
+        visited_distance, visited_parent, visited_closed_yn = visited[node_ij]
 
-        # Showing how to get this data back out of visited
-        visited_triplet = visited[node_ij]
-        visited_distance = visited_triplet[0]
-        visited_parent = visited_triplet[1]
-        visited_closed_yn = visited_triplet[2]
-        #  Step 1: Break out of the loop if node_ij is the goal node
-        #  Step 2: If this node is closed, skip it
-        #  Step 3: Set the node to closed
-        #    Now do the instructions from the slide (the actual algorithm)
-        #  Lec 8_1: Planning, at the end
-        #  https://docs.google.com/presentation/d/1pt8AcSKS2TbKpTAVV190pRHgS_M38ldtHQHIltcYH6Y/edit#slide=id.g18d0c3a1e7d_0_0
-        # YOUR CODE HERE
+        # Step 1: Break if the goal is reached
         if node_ij == goal_loc:
             break
+
+        # Step 2: Skip closed nodes
         if visited_closed_yn:
             continue
+
+        # Step 3: Mark the current node as closed
         visited[node_ij] = (visited_distance, visited_parent, True)
-        for adj_node in eight_connected(node_ij):
-            if not is_free(im, adj_node):
+
+        # Step 4: Iterate over neighbors
+        for neighbor in eight_connected(node_ij):
+            # Skip out-of-bounds neighbors
+            if neighbor[0] < 0 or neighbor[1] < 0 or neighbor[0] >= im.shape[1] or neighbor[1] >= im.shape[0]:
                 continue
-            if adj_node in visited and visited[adj_node][2] == True:
+            
+            # Skip walls and non-free spaces
+            if not is_free(im, neighbor):
                 continue
-            move_cost = np.linalg.norm(np.array(adj_node) - np.array(node_ij))
-            g_score = visited_distance + move_cost
-            f_score = g_score + np.linalg.norm(np.array(adj_node) - np.array(goal_loc))
-            if adj_node not in visited or g_score < visited[adj_node][0]:
-                visited[adj_node] = (g_score, node_ij, False)
-                heapq.heappush(priority_queue,(f_score, adj_node))
-                        
+            
+            # Calculate the distance to the neighbor
+            g_cost = visited_distance + np.linalg.norm(np.array(neighbor) - np.array(node_ij)) 
+            f_cost = g_cost + np.linalg.norm(np.array(neighbor) - np.array(goal_loc)) 
+            # Update the neighbor's data if it's a better path
+            if neighbor not in visited or g_cost < visited[neighbor][0]:
+                visited[neighbor] = (g_cost, node_ij, False)
+                heapq.heappush(priority_queue, (f_cost, neighbor))
 
-    # Now check that we actually found the goal node
-    try_2 = goal_loc
-    if not goal_loc in visited:
-        # TODO: Deal with not being able to get to the goal loc
-        # BEGIN SOLULTION
-        best = 1e30
-        for v in visited:
-            if v[0] < best:
-                best = v[0]
-                try_2 = v[1]
-        if try_2 is None:
-            raise ValueError(f"Goal {goal_loc} not reached")
-        return dijkstra(im, robot_loc, try_2)
+    # Check if we reached the goal
+    if goal_loc not in visited:
+        # Handle unreachable goals
+        closest_node = min(
+            (node for node in visited if not visited[node][2]),
+            key=lambda n: visited[n][0],
+            default=None
+        )
+        if closest_node is None:
+            raise ValueError("No reachable nodes from the start location")
+        return dijkstra(im, robot_loc, closest_node)
 
-
-
-    # TODO: Build the path by starting at the goal node and working backwards
-    # YOUR CODE HERE
+    # Backtrack to construct the path
     path = []
     current = goal_loc
     while current is not None:
-        path.append(current) 
+        path.append(current)
         current = visited[current][1]
 
-    path = path[::-1]
-    return path # Return the path in start-to-goal order
-  
+    return path[::-1]  # Return the path from start to goal
 
 def open_image(im_name):
     """ A helper function to open up the image and the yaml file and threshold
