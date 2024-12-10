@@ -45,7 +45,6 @@ class StudentController(RobotController):
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
 			self.waypoints = []
-			self.current_best_point = ()
 
 		
 
@@ -92,14 +91,14 @@ class StudentController(RobotController):
 			possible_points = explore.find_all_possible_goals(im)
 			robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
 			best_point = explore.find_best_point(im, possible_points, robot_pix)
-			best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
-			self.current_best_point = best_point_xy
+			
 			path = pathplan.dijkstra(im, robot_pix, best_point)
 			waypoints = explore.find_waypoints(im, path)
 			for point in waypoints:
 				waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 				waypoints_xy.append(waypoint)
 			self.waypoints = waypoints_xy
+			self.current_best_point = self.waypoints[-1]
 			waypoints_xy = tuple(waypoints_xy)
 			if self.current_best_point in self.waypoints:
 				rospy.loginfo("Best point is in waypoints")
