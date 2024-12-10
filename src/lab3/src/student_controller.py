@@ -22,7 +22,7 @@ class StudentController(RobotController):
 		self.waypoints = []
 		self.distance_history = []
 		self.count = 0
-
+		self.waypoint_length = 0
 	def distance_update(self,  distance):
 		'''
 		This function is called every time the robot moves towards a goal.  If you want to make sure that
@@ -36,12 +36,15 @@ class StudentController(RobotController):
 		'''
 		rospy.loginfo(f'Distance: {distance}')
 		self.distance_history.append(distance)
+		if distance < 0.6 and self.waypoints:
+			self.waypoints.pop(0)
 
 		# Keep only the last 5 distances
 		if len(self.distance_history) > 10:
 			self.distance_history.pop(0)
 
 		# Check if distances are increasing consistently
+  
 		if len(self.distance_history) == 10 and all(self.distance_history[i] <= self.distance_history[i + 1]
 			for i in range(9)):
 			if self.waypoints:
@@ -49,8 +52,7 @@ class StudentController(RobotController):
 				self.waypoints.pop(0)
 				if self.waypoints:
 					controller.set_waypoints(self.waypoints)
-		if distance < 0.6 and self.waypoints:
-			self.waypoints.pop(0)
+
 
 	def map_update(self, point, map, map_data):
 		'''
@@ -98,7 +100,7 @@ class StudentController(RobotController):
 			waypoints_xy.append(waypoint)
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
 		rospy.loginfo(f"Amount of waypoints left: {len(self.waypoints)}")
-		if len(self.waypoints) < 3 or not self.waypoints:
+		if len(self.waypoints) < 5 or not self.waypoints:
 			self.waypoints = waypoints_xy
 			waypoints_xy = tuple(waypoints_xy)
 			controller.set_waypoints(waypoints_xy)
