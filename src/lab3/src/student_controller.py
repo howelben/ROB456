@@ -94,6 +94,7 @@ class StudentController(RobotController):
 			robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
 			best_point = explore.find_best_point(im, possible_points, robot_pix)
 			best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
+			self.current_best_point = best_point_xy
 			path = pathplan.dijkstra(im, robot_pix, best_point)
 			waypoints = explore.find_waypoints(im, path)
 			for point in waypoints:
@@ -101,6 +102,8 @@ class StudentController(RobotController):
 				waypoints_xy.append(waypoint)
 			self.waypoints = waypoints_xy
 			waypoints_xy = tuple(waypoints_xy)
+			if self.current_best_point in self.waypoints:
+				rospy.loginfo("Best point is in waypoints")
 			controller.set_waypoints(waypoints_xy)
        
 				
