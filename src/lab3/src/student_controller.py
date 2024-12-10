@@ -42,10 +42,6 @@ class StudentController(RobotController):
 		rospy.loginfo(f'Distance: {distance}')
 		if distance < 0.4:
 			rospy.loginfo(f"Waypoint reached.")
-			try:
-				self.waypoints.pop(0)
-			except:
-				rospy.loginfo("No points")
 			self.count = 0
    
 		self.count += 1
@@ -87,6 +83,7 @@ class StudentController(RobotController):
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 		except:
 			rospy.loginfo('No odometry information')
+			controller.set_waypoints(self.waypoints[::-1])
    
 		self.path_update(robot_position)
 		
