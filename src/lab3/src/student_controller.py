@@ -92,12 +92,12 @@ class StudentController(RobotController):
 		rospy.loginfo(f"Best point: {best_point}")
 		path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
 		waypoints = explore.find_waypoints(im_thresh, path)
-		rospy.loginfo(f"Length of waypoints: {len(waypoints)}")
 		for point in waypoints:
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
 		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
-		if len(self.waypoints) < 3:
+		rospy.loginfo(f"Amount of waypoints left: {len(self.waypoints)}")
+		if len(self.waypoints) < 3 or not self.waypoints:
 			self.waypoints = waypoints_xy
 			waypoints_xy = tuple(waypoints_xy)
 			controller.set_waypoints(waypoints_xy)
