@@ -86,23 +86,34 @@ class StudentController(RobotController):
 		
 		
 	def path_update(self, im, robot_position, size_pix, origin, im_size):
+		seen = False
 		waypoints_xy = []
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
 		if self.waypoints:
 			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(robot_position))
-		if not self.waypoints or dist < 1.0:
+		if not self.waypoints or dist < 2.0:
 				rospy.loginfo("Calculating new path")
 				possible_points = explore.find_all_possible_goals(im)
 				robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
+				temp_points = possible_points
+				for point in possible_points:
+					point_xy = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
+					for seen_goal in self.seen_goals:
+						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5:
+							seen = True
+							break
+					if seen:
+						temp_points.remove(point)
+						seen = False
+				possible_points = temp_points
 				best_point = explore.find_best_point(im, possible_points, robot_pix)
-				
 				path = pathplan.dijkstra(im, robot_pix, best_point)
 				waypoints = explore.find_waypoints(im, path)
 				for point in waypoints:
 					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 					waypoints_xy.append(waypoint)
 				self.waypoints = waypoints_xy
-				self.current_best_point = self.waypoints[-1]
+				self.seen_goals.append(waypoints_xy[-1])
 				waypoints_xy = tuple(waypoints_xy)
 				if self.current_best_point in self.waypoints:
 					rospy.loginfo("Best point is in waypoints")
