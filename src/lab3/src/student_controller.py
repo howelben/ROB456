@@ -59,6 +59,8 @@ class StudentController(RobotController):
 		size_pix = map.info.resolution
 		origin = map.info.origin.position.x
 		im_size = [map.info.width, map.info.height]
+		seen_points = []
+		point_seen = False
 		rospy.loginfo(f"Image size: {im_size}")
 
 		try:
@@ -78,9 +80,33 @@ class StudentController(RobotController):
 		for point in waypoints:
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
-		self.waypoints = waypoints_xy
 		waypoints_xy = tuple(waypoints_xy)
 		controller.set_waypoints(waypoints_xy)
+		waypoints_xy = []
+		for point in possible_points:
+			if seen_points:
+				for seen_point in seen_points:
+					point_xy = explore.convert_pix_to_x_y(im_size, point, size_pix, origin)
+					seen_point_xy = explore.convert_pix_to_x_y(im_size, seen_point, size_pix, origin)
+					if np.linalg.norm(np.array(point_xy) - np.array(seen_point_xy)) <= 1:
+						point_seen = True
+						break
+			if point_seen == True:
+				seen_points.append(point)
+				point_seen = False
+				continue
+			else:
+				path = pathplan.dijkstra(im_thresh, robot_pix, point)
+				waypoints = explore.find_waypoints(im_thresh, path)
+				for new_point in waypoints:
+					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, new_point, size_pix, origin))
+					waypoints_xy.append(waypoint)
+				waypoints_xy = tuple(waypoints_xy)
+				controller.set_waypoints(waypoints_xy)
+       
+				
+
+
 if __name__ == '__main__':
 	# Initialize the node.
 	rospy.init_node('student_controller', argv=sys.argv)
