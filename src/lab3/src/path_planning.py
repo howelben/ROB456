@@ -213,16 +213,20 @@ def dijkstra(im, robot_loc, goal_loc):
                 heapq.heappush(priority_queue, (f_cost, neighbor))
 
     # Check if we reached the goal
+# Check if we reached the goal
     if goal_loc not in visited:
-        # Handle unreachable goals
-        closest_node = min(
-            (node for node in visited if not visited[node][2]),
-            key=lambda n: visited[n][0],
-            default=None
-        )
-        if closest_node is None:
+        # Find the closest valid reachable node (parent node of the last processed node)
+        closest_reachable_node = None
+        for node, (distance, parent, closed) in visited.items():
+            if closed and (closest_reachable_node is None or distance < visited[closest_reachable_node][0]):
+                closest_reachable_node = node
+
+        # If no reachable nodes were found (shouldn't happen if the start is valid)
+        if closest_reachable_node is None:
             raise ValueError("No reachable nodes from the start location")
-        return dijkstra(im, robot_loc, closest_node)
+
+        # Update goal_loc to be the closest reachable node
+        goal_loc = closest_reachable_node
 
     # Backtrack to construct the path
     path = []
