@@ -24,6 +24,10 @@ class StudentController(RobotController):
 		self.count = 0
 		self.seen_goals = []
 		self.current_best_point = ()
+		self.im_thresh = 0
+		self.size_pix = 0
+		self.origin = 0
+		self.im_size = []
 	def distance_update(self,  distance):
 		'''
 		This function is called every time the robot moves towards a goal.  If you want to make sure that
@@ -38,6 +42,10 @@ class StudentController(RobotController):
 		rospy.loginfo(f'Distance: {distance}')
 		if distance < 0.4:
 			rospy.loginfo(f"Waypoint reached.")
+			try:
+				self.waypoints.pop(0)
+			except:
+				rospy.loginfo("No points")
 			self.count = 0
    
 		self.count += 1
@@ -67,11 +75,11 @@ class StudentController(RobotController):
 		# It's possible that the position passed to this function is None.  This try-except block will deal
 		# with that.  Trying to unpack the position will fail if it's None, and this will raise an exception.
 		# We could also explicitly check to see if the point is None.
-		size_pix = map.info.resolution
-		origin = map.info.origin.position.x
-		im_size = [map.info.width, map.info.height]
-		im = np.array(map.data).reshape(map.info.height, map.info.width)
-		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
+		self.size_pix = map.info.resolution
+		self.origin = map.info.origin.position.x
+		self.im_size = [map.info.width, map.info.height]
+		self.im = np.array(map.data).reshape(map.info.height, map.info.width)
+		self.im_thresh = pathplan.convert_image(self.im, 0.3, 0.7)
 
 		try:
 			# The (x, y) position of the robot can be retrieved like this.
@@ -80,12 +88,12 @@ class StudentController(RobotController):
 		except:
 			rospy.loginfo('No odometry information')
    
-		self.path_update(im_thresh,robot_position, size_pix, origin, im_size)
+		self.path_update(robot_position)
 		
 
 		
 		
-	def path_update(self, im, robot_position, size_pix, origin, im_size):
+	def path_update(self, robot_position):
 		seen = False
 		waypoints_xy = []
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
@@ -93,11 +101,11 @@ class StudentController(RobotController):
 			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(robot_position))
 		if not self.waypoints or dist < 1.5:
 				rospy.loginfo("Calculating new path")
-				possible_points = explore.find_all_possible_goals(im)
-				robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
+				possible_points = explore.find_all_possible_goals(self.im_thresh)
+				robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
 				temp_points = possible_points
 				for point in possible_points:
-					point_xy = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
+					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
 					for seen_goal in self.seen_goals:
 						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5:
 							seen = True
@@ -106,16 +114,11 @@ class StudentController(RobotController):
 						temp_points.remove(point)
 						seen = False
 				possible_points = temp_points
-				best_point = explore.find_best_point(im, possible_points, robot_pix)
-				try:
-					path = pathplan.dijkstra(im, robot_pix, best_point)
-				except:
-					best_point_xy = tuple(explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin))
-					self.seen_goals.append(best_point_xy)
-					self.path_update(im,robot_position, size_pix, origin, im_size)
-				waypoints = explore.find_waypoints(im, path)
+				best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
+				path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
+				waypoints = explore.find_waypoints(self.im_thresh, path)
 				for point in waypoints:
-					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
+					waypoint  = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
 					waypoints_xy.append(waypoint)
 				self.waypoints = waypoints_xy
 				self.seen_goals.append(waypoints_xy[-1])
