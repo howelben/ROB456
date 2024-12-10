@@ -49,7 +49,7 @@ class StudentController(RobotController):
 				self.waypoints.pop(0)
 				if self.waypoints:
 					controller.set_waypoints(self.waypoints)
-		if distance < 0.3 and self.waypoints:
+		if distance < 0.6 and self.waypoints:
 			self.waypoints.pop(0)
 
 	def map_update(self, point, map, map_data):
