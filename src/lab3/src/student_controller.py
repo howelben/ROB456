@@ -35,13 +35,15 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if distance >= 0.3: 
-			self.count = self.count + 1
-		if self.count == 150:
+		if distance < 0.3 and self.current_waypoint:
+			rospy.loginfo(f"Waypoint {self.current_waypoint} reached.")
+			self.waypoints.remove(self.current_waypoint)
+   
+		self.count += 1
+		if self.count >= 150:  # Adjust this threshold as needed
+			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
-			if self.waypoints:
-				self.seen_goals.append(self.waypoints[-1])
-			controller.set_waypoints(self.waypoints[0])
+			self.waypoints = []
 		
 
 
@@ -63,10 +65,11 @@ class StudentController(RobotController):
 		# It's possible that the position passed to this function is None.  This try-except block will deal
 		# with that.  Trying to unpack the position will fail if it's None, and this will raise an exception.
 		# We could also explicitly check to see if the point is None.
-		waypoints_xy = []
 		size_pix = map.info.resolution
 		origin = map.info.origin.position.x
 		im_size = [map.info.width, map.info.height]
+		im = np.array(map.data).reshape(map.info.height, map.info.width)
+		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
 
 		try:
 			# The (x, y) position of the robot can be retrieved like this.
@@ -74,24 +77,26 @@ class StudentController(RobotController):
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 		except:
 			rospy.loginfo('No odometry information')
+   
+		self.path_update(im_thresh,robot_position, size_pix, origin, im_size)
+		
 
-		im = np.array(map.data).reshape(map.info.height, map.info.width)
-		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
-		possible_points = explore.find_all_possible_goals(im_thresh)
+		
+		
+	def path_update(self, im, robot_position, size_pix, origin, im_size):
+		waypoints_xy = []
+		possible_points = explore.find_all_possible_goals(im)
 		robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
-		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
+		best_point = explore.find_best_point(im, possible_points, robot_pix)
 		best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
-		path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
-		waypoints = explore.find_waypoints(im_thresh, path)
+		path = pathplan.dijkstra(im, robot_pix, best_point)
+		waypoints = explore.find_waypoints(im, path)
 		for point in waypoints:
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
 		self.waypoints = waypoints_xy
 		waypoints_xy = tuple(waypoints_xy)
 		controller.set_waypoints(waypoints_xy)
-		
-		
-		
        
 				
 
