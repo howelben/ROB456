@@ -36,12 +36,12 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if distance < 0.8:
+		if distance < 0.4:
 			rospy.loginfo(f"Waypoint reached.")
 			self.count = 0
    
 		self.count += 1
-		if self.count >= 150:  # Adjust this threshold as needed
+		if self.count >= 200:  # Adjust this threshold as needed
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
 			self.waypoints = []
@@ -107,7 +107,12 @@ class StudentController(RobotController):
 						seen = False
 				possible_points = temp_points
 				best_point = explore.find_best_point(im, possible_points, robot_pix)
-				path = pathplan.dijkstra(im, robot_pix, best_point)
+				try:
+					path = pathplan.dijkstra(im, robot_pix, best_point)
+				except:
+					best_point_xy = tuple(explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin))
+					self.seen_goals.append(best_point_xy)
+					self.path_update(im,robot_position, size_pix, origin, im_size)
 				waypoints = explore.find_waypoints(im, path)
 				for point in waypoints:
 					waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
@@ -116,7 +121,6 @@ class StudentController(RobotController):
 				self.seen_goals.append(waypoints_xy[-1])
 				waypoints_xy = tuple(waypoints_xy)
 				controller.set_waypoints(waypoints_xy)
-		rospy.loginfo(f"Length of seen goals: {len(self.seen_goals)}")
 				
 
 
