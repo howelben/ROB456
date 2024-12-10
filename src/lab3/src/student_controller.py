@@ -44,7 +44,6 @@ class StudentController(RobotController):
 		if self.count >= 150:  # Adjust this threshold as needed
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
-			controller.set_waypoints((self.waypoints[0]))
 			self.waypoints = []
 			self.current_best_point = ()
 
