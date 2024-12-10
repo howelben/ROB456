@@ -154,28 +154,7 @@ def find_best_point(im, possible_points, robot_loc):
     if not possible_points:
         raise ValueError("No possible points to explore.")
 
-    def expand_search(im, start_point):
-        """Expand search layer-by-layer until a free point is found."""
-        visited = set()  # To avoid revisiting points
-        queue = [start_point]
 
-        while queue:
-            current = queue.pop(0)
-            if current in visited:
-                continue
-            visited.add(current)
-
-            # Check for free neighbors
-            neighbors = path_planning.eight_connected(current)
-            free_neighbors = [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
-            if free_neighbors:
-                return free_neighbors[0]  # Return the first free point found
-
-            # Expand to next neighbors
-            from path_planning import eight_connected
-            queue.extend(eight_connected(current))
-
-        raise ValueError("No free points found in the search area.")
 
     # Find the farthest unseen point from the robot's location
     distances_to_unseen = [(point, np.linalg.norm(np.array(point) - np.array(robot_loc)))
@@ -183,12 +162,29 @@ def find_best_point(im, possible_points, robot_loc):
     farthest_unseen, _ = max(distances_to_unseen, key=lambda x: x[1])
 
     # Find the closest free point near the farthest unseen point
-    
-    best_point = expand_search(im, farthest_unseen)
-    return best_point
+    visited = set()  # To avoid revisiting points
+    queue = [farthest_unseen]
+
+    while queue:
+        current = queue.pop(0)
+        if current in visited:
+            continue
+        visited.add(current)
+
+        # Check for free neighbors
+        neighbors = path_planning.eight_connected(current)
+        free_neighbors = [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
+        if free_neighbors:
+            return free_neighbors[0]  # Return the first free point found
+
+        # Expand to next neighbors
+        queue.extend(path_planning.eight_connected(current))
+
+    raise ValueError("No free points found in the search area.")
+ 
 
 
-def find_waypoints(im, path, res=0.95):
+def find_waypoints(im, path, res=0.98):
     """ Place waypoints along the path
     @param im - the thresholded image
     @param path - the initial path
@@ -217,7 +213,7 @@ def find_waypoints(im, path, res=0.95):
         print(f"Curvature at {i} is {curvature}")
         
         # If the curvature is not 1, then we have a corner
-        if curvature < 0.995:
+        if curvature < res:
             corners.append(split_path[i])
     del corners[0]
     corners.append(path[-1])

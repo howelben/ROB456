@@ -23,6 +23,7 @@ class StudentController(RobotController):
 		self.distance_history = []
 		self.count = 0
 		self.seen_goals = []
+		self.current_best_point = ()
 	def distance_update(self,  distance):
 		'''
 		This function is called every time the robot moves towards a goal.  If you want to make sure that
@@ -43,7 +44,10 @@ class StudentController(RobotController):
 		if self.count >= 150:  # Adjust this threshold as needed
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
+			controller.set_waypoints((self.waypoints[0]))
 			self.waypoints = []
+			self.current_best_point = ()
+
 		
 
 
@@ -85,18 +89,20 @@ class StudentController(RobotController):
 		
 	def path_update(self, im, robot_position, size_pix, origin, im_size):
 		waypoints_xy = []
-		possible_points = explore.find_all_possible_goals(im)
-		robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
-		best_point = explore.find_best_point(im, possible_points, robot_pix)
-		best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
-		path = pathplan.dijkstra(im, robot_pix, best_point)
-		waypoints = explore.find_waypoints(im, path)
-		for point in waypoints:
-			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
-			waypoints_xy.append(waypoint)
-		self.waypoints = waypoints_xy
-		waypoints_xy = tuple(waypoints_xy)
-		controller.set_waypoints(waypoints_xy)
+		if not self.waypoints or self.current_best_point not in self.waypoints:
+			possible_points = explore.find_all_possible_goals(im)
+			robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
+			best_point = explore.find_best_point(im, possible_points, robot_pix)
+			best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
+			self.current_best_point = best_point_xy
+			path = pathplan.dijkstra(im, robot_pix, best_point)
+			waypoints = explore.find_waypoints(im, path)
+			for point in waypoints:
+				waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
+				waypoints_xy.append(waypoint)
+			self.waypoints = waypoints_xy
+			waypoints_xy = tuple(waypoints_xy)
+			controller.set_waypoints(waypoints_xy)
        
 				
 
