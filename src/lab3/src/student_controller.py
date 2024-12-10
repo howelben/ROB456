@@ -36,7 +36,7 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if distance < 0.3 and self.current_waypoint:
+		if distance < 0.2 and self.current_waypoint:
 			rospy.loginfo(f"Waypoint {self.current_waypoint} reached.")
 			self.waypoints.remove(self.current_waypoint)
    
@@ -89,12 +89,11 @@ class StudentController(RobotController):
 		
 	def path_update(self, im, robot_position, size_pix, origin, im_size):
 		waypoints_xy = []
-		if not self.waypoints or self.current_best_point not in self.waypoints:
+		if not self.waypoints:
 			possible_points = explore.find_all_possible_goals(im)
 			robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
 			best_point = explore.find_best_point(im, possible_points, robot_pix)
 			best_point_xy = explore.convert_pix_to_x_y(im_size, best_point, size_pix, origin)
-			self.current_best_point = best_point_xy
 			path = pathplan.dijkstra(im, robot_pix, best_point)
 			waypoints = explore.find_waypoints(im, path)
 			for point in waypoints:
