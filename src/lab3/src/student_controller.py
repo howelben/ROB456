@@ -35,24 +35,7 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		self.distance_history.append(distance)
-		if distance < 0.6 and self.waypoints:
-			self.waypoints.pop(0)
-			controller.set_waypoints(self.waypoints)
 
-		# Keep only the last 5 distances
-		if len(self.distance_history) > 10:
-			self.distance_history.pop(0)
-
-		# Check if distances are increasing consistently
-  
-		if len(self.distance_history) == 10 and all(self.distance_history[i] <= self.distance_history[i + 1]
-			for i in range(9)):
-			if self.waypoints:
-				rospy.loginfo(f'Removing waypoint: {self.waypoints[0]}')
-				self.waypoints.pop(0)
-				if self.waypoints:
-					controller.set_waypoints(self.waypoints)
 
 
 	def map_update(self, point, map, map_data):
