@@ -220,7 +220,7 @@ def find_waypoints(im, path, res=0.95):
         if curvature < 1.00:
             corners.append(split_path[i])
     del corners[0]
-    #corners.append(path[-1])
+    corners.append(path[-1])
     return corners
 
 if __name__ == '__main__':

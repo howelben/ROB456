@@ -38,6 +38,7 @@ class StudentController(RobotController):
 		self.distance_history.append(distance)
 		if distance < 0.6 and self.waypoints:
 			self.waypoints.pop(0)
+			controller.set_waypoints(self.waypoints)
 
 		# Keep only the last 5 distances
 		if len(self.distance_history) > 10:
@@ -88,22 +89,16 @@ class StudentController(RobotController):
 		im_thresh = pathplan.convert_image(im, 0.3, 0.7)
 		possible_points = explore.find_all_possible_goals(im_thresh)
 		robot_pix = tuple(explore.convert_x_y_to_pix(im_size, robot_position, size_pix, origin))
-		rospy.loginfo(f"Is the robot location free: {pathplan.is_free(im_thresh, robot_pix)} ")
-		#robot_pix = robot_pix[::-1]
-		rospy.loginfo(f"Robot pixel: {robot_pix}")
 		best_point = explore.find_best_point(im_thresh, possible_points, robot_pix)
-		rospy.loginfo(f"Best point: {best_point}")
 		path = pathplan.dijkstra(im_thresh, robot_pix, best_point)
 		waypoints = explore.find_waypoints(im_thresh, path)
 		for point in waypoints:
 			waypoint  = tuple(explore.convert_pix_to_x_y(im_size, point, size_pix, origin))
 			waypoints_xy.append(waypoint)
-		#waypoints_xy.append(tuple(explore.convert_pix_to_x_y(im_size, list(robot_pix), size_pix, origin)))
-		rospy.loginfo(f"Amount of waypoints left: {len(self.waypoints)}")
-		if len(self.waypoints) < 5 or not self.waypoints:
-			self.waypoints = waypoints_xy
-			waypoints_xy = tuple(waypoints_xy)
-			controller.set_waypoints(waypoints_xy)
+		self.waypoints = waypoints_xy
+		waypoints_xy = tuple(waypoints_xy)
+		controller.set_waypoints(waypoints_xy)
+		controller.send_points()
 if __name__ == '__main__':
 	# Initialize the node.
 	rospy.init_node('student_controller', argv=sys.argv)
