@@ -49,7 +49,7 @@ class StudentController(RobotController):
 		if self.count >= 100:  # Adjust this threshold as needed
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
-			location = self.waypoints[-2]
+			location = self.waypoints[0]
 			self.waypoints = []
 			self.path_update(location)
 
@@ -105,16 +105,19 @@ class StudentController(RobotController):
 				possible_points = explore.find_all_possible_goals(self.im_thresh)
 				robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
 				temp_points = possible_points
+				rospy.loginfo(f"Len Possible Points: {possible_points}")
+				rospy.loginfo(f"Seen goals: {self.seen_goals}")
 				for point in possible_points:
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
 					for seen_goal in self.seen_goals:
-						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 0.5:
+						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 1.0:
 							seen = True
 							break
 					if seen:
 						temp_points.remove(point)
 						seen = False
 				possible_points = temp_points
+				rospy.loginfo(f"Len Possible Points: {possible_points}")
 				best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
 				path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 				waypoints = explore.find_waypoints(self.im_thresh, path)
