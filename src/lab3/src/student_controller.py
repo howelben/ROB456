@@ -42,7 +42,7 @@ class StudentController(RobotController):
 		'''
 		rospy.loginfo(f'Distance: {distance}')
 		self.count += 1	
-		if distance < 0.7:
+		if distance < 0.2:
 			rospy.loginfo(f"Waypoint reached.")
 			self.count = 0
 			if self.waypoints:
