@@ -124,7 +124,7 @@ class StudentController(RobotController):
 			path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 			rospy.loginfo(f"Path length: {len(path)}")
 			#Find _waypoints and convert to xy tuples
-			waypoints = explore.find__waypoints(self.im_thresh, path)
+			waypoints = explore.find_waypoints(self.im_thresh, path)
 			rospy.loginfo(f"_waypoints: {waypoints}")
 			for point in waypoints:
 				waypoint  = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
@@ -147,7 +147,7 @@ if __name__ == '__main__':
 	# This will move the robot to a set of fixed _waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
-	controller.set_waypoints(((-4, -4), (-4, 0), (5, 0)))
+	controller.set_waypoints(((-4, -4), (-4, 0)))
 
 	# Once you call this function, control is given over to the controller, and the robot will start to
 	# move.  This function will never return, so any code below it in the file will not be executed.
