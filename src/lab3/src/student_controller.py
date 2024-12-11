@@ -106,9 +106,7 @@ class StudentController(RobotController):
 	def path_update(self, robot_position):
 		waypoints_xy = []
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
-		if self.waypoints:
-			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(robot_position))
-		if not self.waypoints or dist < 1.5:
+		if not self.waypoints:
 				rospy.loginfo("Calculating new path")
 				#Find all possible point
 				possible_points = explore.find_all_possible_goals(self.im_thresh)
@@ -120,7 +118,7 @@ class StudentController(RobotController):
 				rospy.loginfo(f"Seen goals: {self.seen_goals}")
 				for point in possible_points:
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
-					if any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 0.5 for seen_goal in self.seen_goals):
+					if any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 1.0 for seen_goal in self.seen_goals):
 						temp_points.remove(point)
 				possible_points = temp_points
     
