@@ -13,13 +13,12 @@ from controller import RobotController
 
 class StudentController(RobotController):
 	'''
-	This class allows you to set waypoints that the robot will follow.  These robots should be in the map
+	This class allows you to set _waypoints that the robot will follow.  These robots should be in the map
 	coordinate frame, and will be automatially sent to the code that actually moves the robot, contained in
 	StudentDriver.
 	'''
 	def __init__(self):
 		super().__init__()
-		self.waypoints = []
 		self.distance_history = []
 		self.seen_goals = []
 		self.current_best_point = None
@@ -33,7 +32,7 @@ class StudentController(RobotController):
 		This function is called every time the robot moves towards a goal.  If you want to make sure that
 		the robot is making progress towards it's goal, then you might want to check that the distance to
 		the goal is generally going down.  If you want to change where the robot is heading to, you can
-		make a call to set_waypoints here.  This call will override the current set of waypoints, and the
+		make a call to set__waypoints here.  This call will override the current set of _waypoints, and the
 		robot will start to drive towards the first waypoint in the new list.
 
 		Parameters:
@@ -45,21 +44,16 @@ class StudentController(RobotController):
 		if distance < 0.7:
 			rospy.loginfo(f"Waypoint reached.")
 			self.distance_history = []  # Reset history when a waypoint is reached
-			if self.waypoints:
-				self.waypoints.pop(0)
-
-			if not self.waypoints:
-				self.path_update(self.curr_position)
 
 		
 		if len(self.distance_history) == 50 and all(self.distance_history[i] <= self.distance_history[i + 1] for i in range(len(self.distance_history) - 1)):
 			rospy.loginfo("Robot stuck. Recalculating path.")
 			self.distance_history = []  # Reset history
-			if self.waypoints:
-				new_position = self.waypoints[0]
+			if self._waypoints:
+				new_position = self._waypoints[0]
 			else:
 				new_position = self.curr_position
-			self.waypoints = []
+			self._waypoints = []
 			self.path_update(new_position)
 
 		
@@ -70,8 +64,8 @@ class StudentController(RobotController):
 		'''
 		This function is called every time a new map update is available from the SLAM system.  If you want
 		to change where the robot is driving, you can do it in this function.  If you generate a path for
-		the robot to follow, you can pass itS to the driver code using set_waypoints().  Again, this will
-		override any current set of waypoints that you might have previously sent.
+		the robot to follow, you can pass itS to the driver code using set__waypoints().  Again, this will
+		override any current set of _waypoints that you might have previously sent.
 
 		Parameters:
 			point:		A PointStamped containing the position of the robot, in the map coordinate frame.
@@ -97,7 +91,7 @@ class StudentController(RobotController):
 			self.path_update(robot_position)
 		except:
 			rospy.loginfo('No odometry information')
-			controller.set_waypoints(self.waypoints[0])
+			controller.set_waypoints(self._waypoints[0])
    
 		
 		
@@ -106,10 +100,9 @@ class StudentController(RobotController):
 		
 	def path_update(self, robot_position):
 		waypoints_xy = []
-		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
-		# if self.waypoints:
-		# 	dis = np.linalg.norm(np.array(self.waypoints[-1]-np.array(robot_position)))
-		if not self.waypoints:
+		rospy.loginfo(f"Self _waypoints size: {len(self._waypoints)}")
+
+		if not self._waypoints:
 			rospy.loginfo("Calculating new path")
 			#Find all possible point
 			possible_points = explore.find_all_possible_goals(self.im_thresh)
@@ -132,15 +125,14 @@ class StudentController(RobotController):
 			rospy.loginfo(f"Best point XY: {explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin)}")
 			path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 			rospy.loginfo(f"Path length: {len(path)}")
-			#Find waypoints and convert to xy tuples
-			waypoints = explore.find_waypoints(self.im_thresh, path)
-			rospy.loginfo(f"Waypoints: {waypoints}")
+			#Find _waypoints and convert to xy tuples
+			waypoints = explore.find__waypoints(self.im_thresh, path)
+			rospy.loginfo(f"_waypoints: {waypoints}")
 			for point in waypoints:
 				waypoint  = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
 				waypoints_xy.append(waypoint)
 			#Send waypoint
-			self.waypoints = waypoints_xy
-			rospy.loginfo(f"Self.Waypoints: {self.waypoints}")
+	
 			self.seen_goals.append(waypoints_xy[-1])
 			controller.set_waypoints(tuple(waypoints_xy))
 				
@@ -153,10 +145,10 @@ if __name__ == '__main__':
 	# Start the controller.
 	controller = StudentController()
 
-	# This will move the robot to a set of fixed waypoints.  You should not do this, since you don't know
+	# This will move the robot to a set of fixed _waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
-	#controller.set_waypoints(((-4, -3), (-4, 0), (5, 0)))
+	#controller.set__waypoints(((-4, -3), (-4, 0), (5, 0)))
 
 	# Once you call this function, control is given over to the controller, and the robot will start to
 	# move.  This function will never return, so any code below it in the file will not be executed.
