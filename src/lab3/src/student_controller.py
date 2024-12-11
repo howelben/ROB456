@@ -108,7 +108,7 @@ class StudentController(RobotController):
 			#Find all possible point
 			possible_points = explore.find_all_possible_goals(self.im_thresh)
 			robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
-			
+			rospy.loginfo(f"Len possible Points: {len(possible_points)}")
 			#Remove goals that are too close to seen goals
 			temp_points = []
 			for point in possible_points:
