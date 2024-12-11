@@ -39,11 +39,13 @@ class StudentController(RobotController):
 		Parameters:
 			distance:	The distance to the current goal.
 		'''
+  
+		# I don;t know what I am doing here
 		rospy.loginfo(f'Distance: {distance}')
 		if distance < 0.7:
 			rospy.loginfo(f"Waypoint reached.")
 			self.distance_history = []  # Reset history when a waypoint is reached
-    
+		
 		if len(self.distance_history) == 50 and all(self.distance_history[i] <= self.distance_history[i + 1] for i in range(len(self.distance_history) - 1)):
 			rospy.loginfo("Robot stuck. Recalculating path.")
 			self.distance_history = []  # Reset history
@@ -51,6 +53,7 @@ class StudentController(RobotController):
 				new_position = self.waypoints[0]
 			else:
 				new_position = self.curr_position
+			self.waypoints = []
 			self.path_update(new_position)
 
 		
@@ -100,7 +103,7 @@ class StudentController(RobotController):
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
 		if self.waypoints:
 			dis = np.linalg.norm(np.array(self.waypoints[-1]-np.array(robot_position)))
-		if not self.waypoints or dis < 0.3:
+		if not self.waypoints or dis < 0.7:
 			rospy.loginfo("Calculating new path")
 			#Find all possible point
 			possible_points = explore.find_all_possible_goals(self.im_thresh)
