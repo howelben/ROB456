@@ -100,7 +100,7 @@ class StudentController(RobotController):
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
 		if self.waypoints:
 			dis = np.linalg.norm(np.array(self.waypoints[-1]-np.array(robot_position)))
-		if not self.waypoints and dis < 0.3:
+		if not self.waypoints or dis < 0.3:
 			rospy.loginfo("Calculating new path")
 			#Find all possible point
 			possible_points = explore.find_all_possible_goals(self.im_thresh)
