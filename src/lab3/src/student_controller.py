@@ -21,9 +21,8 @@ class StudentController(RobotController):
 		super().__init__()
 		self.waypoints = []
 		self.distance_history = []
-		self.count = 0
 		self.seen_goals = []
-		self.current_best_point = ()
+		self.current_best_point = None
 		self.im_thresh = 0
 		self.size_pix = 0
 		self.origin = 0
@@ -41,20 +40,18 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		self.count += 1	
 		if distance < 0.2:
 			rospy.loginfo(f"Waypoint reached.")
-			self.count = 0
+			self.distance_history = []  # Reset history when a waypoint is reached
 			if self.waypoints:
 				self.waypoints.pop(0)
-   
+
 			if not self.waypoints:
 				self.path_update(self.curr_position)
     
-		rospy.loginfo(f"Timer: {self.count}")
-		if self.count >= 150:  # Adjust this threshold as needed
+		if len(self.distance_history) == 50 and all(self.distance_history[i] <= self.distance_history[i + 1] for i in range(len(self.distance_history) - 1)):
 			rospy.loginfo("Robot stuck. Recalculating path.")
-			self.count = 0
+			self.distance_history = []  # Reset history
 			if self.waypoints:
 				new_position = self.waypoints[0]
 			else:

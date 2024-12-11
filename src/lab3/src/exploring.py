@@ -174,8 +174,10 @@ def find_best_point(im, possible_points, robot_loc):
         # Check for free neighbors
         neighbors = path_planning.eight_connected(current)
         free_neighbors = [neighbor for neighbor in neighbors if path_planning.is_free(im, neighbor)]
-        if free_neighbors:
-            return free_neighbors[0]  # Return the first free point found
+        
+        # Ensure the point is free and has 8 free neighbors
+        if path_planning.is_free(im, current) and len(free_neighbors) == 8:
+            return current
 
         # Expand to next neighbors
         queue.extend(path_planning.eight_connected(current))
