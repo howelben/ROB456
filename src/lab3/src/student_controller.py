@@ -112,7 +112,7 @@ class StudentController(RobotController):
 			rospy.loginfo(f"Seen goals: {self.seen_goals}")
 			for point in possible_points:
 				point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
-				if any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 1.5 for seen_goal in self.seen_goals):
+				if any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5 for seen_goal in self.seen_goals):
 					temp_points.remove(point)
 			possible_points = temp_points
 
