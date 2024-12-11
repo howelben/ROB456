@@ -105,7 +105,7 @@ class StudentController(RobotController):
 				for point in possible_points:
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
 					for seen_goal in self.seen_goals:
-						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5:
+						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 0.5:
 							seen = True
 							break
 					if seen:
