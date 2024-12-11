@@ -110,15 +110,16 @@ class StudentController(RobotController):
 			robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
 			rospy.loginfo(f"Len possible Points: {len(possible_points)}")
 			#Remove goals that are too close to seen goals
-			temp_points = []
-			for point in possible_points:
-				point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
-				# Check if the point is far enough from all seen goals
-	
-				if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5 for seen_goal in self.seen_goals):
-					temp_points.append(point)
+			if self.seen_goals:
+				temp_points = []
+				for point in possible_points:
+					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
+					# Check if the point is far enough from all seen goals
+		
+					if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5 for seen_goal in self.seen_goals):
+						temp_points.append(point)
 
-			possible_points = temp_points
+				possible_points = temp_points
 
 			#Find best ppinst and calculate path
 			rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
