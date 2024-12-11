@@ -41,7 +41,8 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
 		rospy.loginfo(f'Distance: {distance}')
-		if distance < 0.7:
+		self.count += 1	
+		if distance < 0.7 and self.count == 2:
 			rospy.loginfo(f"Waypoint reached.")
 			self.count = 0
 			if self.waypoints:
@@ -50,7 +51,6 @@ class StudentController(RobotController):
 			if not self.waypoints:
 				self.path_update()
     
-		self.count += 1
 		rospy.loginfo(f"Timer: {self.count}")
 		if self.count >= 150:  # Adjust this threshold as needed
 			rospy.loginfo("Robot stuck. Recalculating path.")
