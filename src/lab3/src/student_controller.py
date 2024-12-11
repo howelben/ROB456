@@ -125,7 +125,7 @@ class StudentController(RobotController):
 			rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
 			best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
 			rospy.loginfo(f"Best point: {best_point}")
-			rospy.loginfo(f"Best point XY: {explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin)}")
+			#rospy.loginfo(f"Best point XY: {explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin)}")
 			path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 			rospy.loginfo(f"Path length: {len(path)}")
 			#Find _waypoints and convert to xy tuples
