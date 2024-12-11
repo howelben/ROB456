@@ -105,7 +105,7 @@ class StudentController(RobotController):
 				possible_points = explore.find_all_possible_goals(self.im_thresh)
 				robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
 				temp_points = possible_points
-				rospy.loginfo(f"Len Possible Points: {possible_points}")
+				rospy.loginfo(f"Len Possible Points: {len(possible_points)}")
 				rospy.loginfo(f"Seen goals: {self.seen_goals}")
 				for point in possible_points:
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
@@ -117,7 +117,7 @@ class StudentController(RobotController):
 						temp_points.remove(point)
 						seen = False
 				possible_points = temp_points
-				rospy.loginfo(f"Len Possible Points: {possible_points}")
+				rospy.loginfo(f"Len Possible Points: {len(possible_points)}")
 				best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
 				path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 				waypoints = explore.find_waypoints(self.im_thresh, path)
