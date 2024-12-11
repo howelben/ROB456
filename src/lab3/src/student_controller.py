@@ -46,7 +46,7 @@ class StudentController(RobotController):
    
 		self.count += 1
 		rospy.loginfo(f"Timer: {self.count}")
-		if self.count >= 100:  # Adjust this threshold as needed
+		if self.count >= 150:  # Adjust this threshold as needed
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
 			location = self.waypoints[0]
@@ -120,6 +120,7 @@ class StudentController(RobotController):
 				rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
 				best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
 				rospy.loginfo(f"Best point: {best_point}")
+				rospy.loginfo(f"Best point XY: {explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin)}")
 				path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 				rospy.loginfo(f"Path length: {len(path)}")
 				waypoints = explore.find_waypoints(self.im_thresh, path)
