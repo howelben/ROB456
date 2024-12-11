@@ -91,7 +91,7 @@ class StudentController(RobotController):
 			self.path_update(robot_position)
 		except:
 			rospy.loginfo('No odometry information')
-			controller.set_waypoints(self._waypoints[0])
+			#controller.set_waypoints(self._waypoints[0])
    
 		
 		
@@ -100,8 +100,6 @@ class StudentController(RobotController):
 		
 	def path_update(self, robot_position):
 		waypoints_xy = []
-		rospy.loginfo(f"Self _waypoints size: {len(self._waypoints)}")
-
 		if not self._waypoints:
 			rospy.loginfo("Calculating new path")
 			#Find all possible point
