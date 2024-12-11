@@ -45,6 +45,7 @@ class StudentController(RobotController):
 			self.count = 0
    
 		self.count += 1
+		rospy.loginfo(f"Timer: {self.count}")
 		if self.count >= 200:  # Adjust this threshold as needed
 			rospy.loginfo("Robot seems to be stuck. Recalculating path.")
 			self.count = 0
