@@ -119,7 +119,9 @@ class StudentController(RobotController):
 				possible_points = temp_points
 				rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
 				best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
+				rospy.loginfo(f"Best point: {best_point}")
 				path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
+				rospy.loginfo(f"Path length: {len(path)}")
 				waypoints = explore.find_waypoints(self.im_thresh, path)
 				rospy.loginfo(f"Waypoints: {waypoints}")
 				for point in waypoints:
