@@ -49,7 +49,7 @@ class StudentController(RobotController):
 				self.waypoints.pop(0)
    
 			if not self.waypoints:
-				self.path_update()
+				self.path_update(self.curr_position)
     
 		rospy.loginfo(f"Timer: {self.count}")
 		if self.count >= 150:  # Adjust this threshold as needed
@@ -93,7 +93,7 @@ class StudentController(RobotController):
 			robot_position = (point.point.x, point.point.y)
 			self.curr_position = robot_position
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
-			self.path_update()
+			self.path_update(robot_position)
 		except:
 			rospy.loginfo('No odometry information')
 			controller.set_waypoints(self.waypoints[0])
@@ -103,16 +103,16 @@ class StudentController(RobotController):
 
 		
 		
-	def path_update(self):
+	def path_update(self, robot_position):
 		waypoints_xy = []
 		rospy.loginfo(f"Self waypoints size: {len(self.waypoints)}")
 		if self.waypoints:
-			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(self.curr_position))
+			dist = np.linalg.norm(np.array(self.waypoints[-1]) - np.array(robot_position))
 		if not self.waypoints or dist < 1.5:
 				rospy.loginfo("Calculating new path")
 				#Find all possible point
 				possible_points = explore.find_all_possible_goals(self.im_thresh)
-				robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, self.curr_position, self.size_pix, self.origin))
+				robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
 				
 				#Remove goals that are too close to seen goals
 				temp_points = possible_points
