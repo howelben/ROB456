@@ -52,6 +52,7 @@ class StudentController(RobotController):
 			location = self.waypoints[-2]
 			controller.set_waypoints(location)
 			self.waypoints = []
+			self.path_update(location)
 
 		
 
