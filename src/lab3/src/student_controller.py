@@ -110,7 +110,7 @@ class StudentController(RobotController):
 			robot_pix = tuple(explore.convert_x_y_to_pix(self.im_size, robot_position, self.size_pix, self.origin))
 			
 			#Remove goals that are too close to seen goals
-			temp_points = possible_points
+			temp_points = []
 			for point in possible_points:
 				point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
 				# Check if the point is far enough from all seen goals
