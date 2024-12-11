@@ -84,7 +84,7 @@ class StudentController(RobotController):
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
 		except:
 			rospy.loginfo('No odometry information')
-			controller.set_waypoints(tuple(self.waypoints[::-1]))
+			controller.set_waypoints(tuple(self.waypoints[-2]))
    
 		self.path_update(robot_position)
 		
