@@ -48,7 +48,7 @@ class StudentController(RobotController):
 				self.waypoints.pop(0)
    
 			if not self.waypoints:
-				self.path_update(self.curr_position)
+				self.path_update()
     
 		self.count += 1
 		rospy.loginfo(f"Timer: {self.count}")
