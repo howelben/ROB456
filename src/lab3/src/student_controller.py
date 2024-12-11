@@ -111,12 +111,12 @@ class StudentController(RobotController):
 			
 			#Remove goals that are too close to seen goals
 			temp_points = possible_points
-			rospy.loginfo(f"Len Possible Points: {len(possible_points)}")
-			rospy.loginfo(f"Seen goals: {self.seen_goals}")
 			for point in possible_points:
-				point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
-				if any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5 for seen_goal in self.seen_goals):
-					temp_points.remove(point)
+				point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
+				# Check if the point is far enough from all seen goals
+				if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5 for seen_goal in self.seen_goals):
+					temp_points.append(point)
+
 			possible_points = temp_points
 
 			#Find best ppinst and calculate path
@@ -150,7 +150,7 @@ if __name__ == '__main__':
 	# This will move the robot to a set of fixed _waypoints.  You should not do this, since you don't know
 	# if you can get to all of these points without building a map first.  This is just to demonstrate how
 	# to call the function, and make the robot move as an example.
-	controller.set_waypoints(((-4, -4), (-4, 0)))
+	controller.set_waypoints(((-4, -4)))
 
 	# Once you call this function, control is given over to the controller, and the robot will start to
 	# move.  This function will never return, so any code below it in the file will not be executed.
