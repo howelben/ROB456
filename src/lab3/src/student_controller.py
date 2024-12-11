@@ -110,14 +110,14 @@ class StudentController(RobotController):
 				for point in possible_points:
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix,self.origin))
 					for seen_goal in self.seen_goals:
-						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 1.5:
+						if np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 1.0:
 							seen = True
 							break
 					if seen:
 						temp_points.remove(point)
 						seen = False
 				possible_points = temp_points
-				rospy.loginfo(f"Len Possible Points: {len(possible_points)}")
+				rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
 				best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
 				path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
 				waypoints = explore.find_waypoints(self.im_thresh, path)
