@@ -41,11 +41,12 @@ class StudentController(RobotController):
   
 		# I don't know what I am doing here
 		rospy.loginfo(f'Distance: {distance}')
-		if distance < 0.5:
+		if distance < 0.8:
 			rospy.loginfo(f"Waypoint reached.")
 			self.distance_history = []  # Reset history when a waypoint is reached
-			if len(self._waypoints) == 1 or not self._waypoints:
-				self.path_update(self.curr_position)
+			if distance < 0.5:
+				if len(self._waypoints) == 1 or not self._waypoints:
+					self.path_update(self.curr_position)
 				
 	    # Append distance to history
 		self.distance_history.append(distance)
