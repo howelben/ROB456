@@ -39,12 +39,12 @@ class StudentController(RobotController):
 			distance:	The distance to the current goal.
 		'''
   
-		# I don't know what I am doing here
+		#Check if point is close and reset history
 		rospy.loginfo(f'Distance: {distance}')
 		if distance < 0.8:
 			rospy.loginfo(f"Waypoint reached.")
 			self.distance_history = []  # Reset history when a waypoint is reached
-			if distance < 0.5:
+			if distance < 0.5: #Close to final point, start finding a new path
 				if len(self._waypoints) == 1 or not self._waypoints:
 					self.path_update(self.curr_position)
 				
@@ -99,7 +99,7 @@ class StudentController(RobotController):
 		except:
 			rospy.loginfo('No odometry information')
 			robot_position = self.curr_position
-		
+		#When it's done
 		done = self.path_update(robot_position)
 		if done == "Done":
 			rospy.loginfo("Its finally over")
@@ -112,6 +112,7 @@ class StudentController(RobotController):
 		
 	def path_update(self, robot_position):
 		waypoints_xy = []
+		#If no waypoints
 		if not self._waypoints:
 			rospy.loginfo("Calculating new path")
 			#Find all possible point
@@ -129,7 +130,7 @@ class StudentController(RobotController):
 						temp_points.append(point)
 
 				possible_points = temp_points
-			if not possible_points:
+			if not possible_points: #If no possible points, done exploring
 				return "Done"
 			#Find best ppinst and calculate path
 			rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
@@ -137,7 +138,8 @@ class StudentController(RobotController):
 			rospy.loginfo(f"Best point: {best_point}")
 			#rospy.loginfo(f"Best point XY: {explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin)}")
 			path = pathplan.dijkstra(self.im_thresh, robot_pix, best_point)
-			if len(path) <= 1:
+			
+			if len(path) <= 1: #If length is one, robot is done exploring
 				return "Done"
 			rospy.loginfo(f"Path length: {len(path)}")
 			#Find _waypoints and convert to xy tuples
@@ -146,8 +148,7 @@ class StudentController(RobotController):
 			for point in waypoints:
 				waypoint  = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
 				waypoints_xy.append(waypoint)
-			#Send waypoint
-	
+   			#Send waypoints
 			self.seen_goals.append(waypoints_xy[-1])
 			controller.set_waypoints(waypoints_xy)
 			rospy.loginfo(f"Current Waypoints: {self._waypoints}")
