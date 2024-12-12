@@ -91,7 +91,10 @@ class StudentController(RobotController):
 			robot_position = (point.point.x, point.point.y)
 			self.curr_position = robot_position
 			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
-			self.path_update(robot_position)
+			done = self.path_update(robot_position)
+			if done == "Done":
+				rospy.loginfo("Its finally over")
+				controller.set_waypoints([])
 		except:
 			rospy.loginfo('No odometry information')
 			controller.set_waypoints(self._waypoints[0])
@@ -116,11 +119,12 @@ class StudentController(RobotController):
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
 					# Check if the point is far enough from all seen goals
 		
-					if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 2.5 for seen_goal in self.seen_goals):
+					if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 3.0 for seen_goal in self.seen_goals):
 						temp_points.append(point)
 
 				possible_points = temp_points
-
+			if not possible_points:
+				return "Done"
 			#Find best ppinst and calculate path
 			rospy.loginfo(f"Len possible Points after removal: {len(possible_points)}")
 			best_point = explore.find_best_point(self.im_thresh, possible_points, robot_pix)
