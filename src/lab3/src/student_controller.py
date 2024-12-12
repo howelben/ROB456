@@ -119,7 +119,7 @@ class StudentController(RobotController):
 					point_xy = tuple(explore.convert_pix_to_x_y(self.im_size, point, self.size_pix, self.origin))
 					# Check if the point is far enough from all seen goals
 		
-					if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 3.0 for seen_goal in self.seen_goals):
+					if not any(np.linalg.norm(np.array(seen_goal) - np.array(point_xy)) <= 3.5 for seen_goal in self.seen_goals):
 						temp_points.append(point)
 
 				possible_points = temp_points
