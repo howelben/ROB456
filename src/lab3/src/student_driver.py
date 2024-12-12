@@ -14,7 +14,7 @@ class StudentDriver(Driver):
 	This class implements the logic to move the robot to a specific place in the world.  All of the
 	interesting functionality is hidden in the parent class.
 	'''
-	def __init__(self, threshold=0.8):
+	def __init__(self, threshold=0.7):
 		super().__init__('odom')
 		# Set the threshold to a reasonable number
 		self._threshold = threshold
@@ -31,7 +31,7 @@ class StudentDriver(Driver):
 			for i, range in enumerate(lidar.ranges):# Check if any lidar reading is within a short distance and in the vicinity of the target angle
 				angle_rad = lidar.angle_min + i * lidar.angle_increment
 				if abs(angle_rad - point_angle) < lidar.angle_increment:# If the angle of the lidar scan is close to the target point's angle
-					if range < 0.2:  # If there's an obstacle within a close range to the target point, return False
+					if range < 0.3:  # If there's an obstacle within a close range to the target point, return False
 						return False
 			# If the distance is within threshold and no obstacles detected, return True
 			rospy.loginfo('Target is reachable and path is clear.')
