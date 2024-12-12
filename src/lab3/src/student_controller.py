@@ -143,7 +143,7 @@ class StudentController(RobotController):
 			self.seen_goals.append(waypoints_xy[-1])
 			controller.set_waypoints(waypoints_xy)
 			rospy.loginfo(f"Current Waypoints: {self._waypoints}")
-			rospy.longinfo(f"Waypoint call: {self._waypoints[0]}")
+			rospy.loginfo(f"Waypoint call: {self._waypoints[0]}")
 				
 
 
