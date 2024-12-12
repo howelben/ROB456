@@ -98,7 +98,7 @@ class StudentController(RobotController):
 		except:
 			rospy.loginfo('No odometry information')
 			robot_position = self.curr_position
-		rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
+		
 		done = self.path_update(robot_position)
 		if done == "Done":
 			rospy.loginfo("Its finally over")
