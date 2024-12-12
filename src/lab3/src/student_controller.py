@@ -52,10 +52,10 @@ class StudentController(RobotController):
 		self.distance_history.append(distance)
 
 		# Keep the history to a manageable size
-		if len(self.distance_history) > 15:
+		if len(self.distance_history) > 50:
 			self.distance_history.pop(0)
 		
-		if len(self.distance_history) == 15 and all(self.distance_history[i] <= self.distance_history[i + 1] for i in range(len(self.distance_history) - 1)):
+		if len(self.distance_history) == 50 and all(self.distance_history[i] <= self.distance_history[i + 1] for i in range(len(self.distance_history) - 1)):
 			rospy.loginfo("Robot stuck. Recalculating path.")
 			self.distance_history = []  # Reset history
 			if self._waypoints:
