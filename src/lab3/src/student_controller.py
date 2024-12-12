@@ -90,14 +90,14 @@ class StudentController(RobotController):
 			# The (x, y) position of the robot can be retrieved like this.
 			robot_position = (point.point.x, point.point.y)
 			self.curr_position = robot_position
-			rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
-			done = self.path_update(robot_position)
-			if done == "Done":
-				rospy.loginfo("Its finally over")
-				controller.set_waypoints([])
 		except:
 			rospy.loginfo('No odometry information')
-			controller.set_waypoints(self._waypoints[0])
+			robot_position = self.curr_position
+		rospy.loginfo(f'Robot is at {robot_position} {point.header.frame_id}')
+		done = self.path_update(robot_position)
+		if done == "Done":
+			rospy.loginfo("Its finally over")
+			controller.set_waypoints([])
    
 		
 		
