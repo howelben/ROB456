@@ -53,10 +53,9 @@ class StudentController(RobotController):
 			rospy.loginfo("Robot stuck. Recalculating path.")
 			self.distance_history = []  # Reset history
 			if self._waypoints:
-				new_position = self._waypoints[0]
-				self.seen_goals.pop()
-			elif len(self._waypoints) == 1 or not self._waypoints:
-				new_position = self.curr_position
+				if self.seen_goals:
+					self.seen_goals.pop()
+			new_position = self.curr_position
 			self._waypoints = None
 			self.path_update(new_position)
 
