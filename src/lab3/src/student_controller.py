@@ -104,7 +104,7 @@ class StudentController(RobotController):
 		if done == "Done":
 			rospy.loginfo("Its finally over")
 			controller.set_waypoints([])
-   
+			sys.exit()
 		
 		
 
